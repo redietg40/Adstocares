@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  passwordHash         String
+  role                 String
+  isVerified           Boolean  @default(false)
+  companyName          String?
+  companyLicenseNumber String?
+  registrationDate     DateTime @default(now())
+
+  verifications CompanyVerification[]
+  products      Product[]
+  payments      Payment[]
+  promotions    Promotion[]
+
+  @@map("users")
+}
+
+model CompanyVerification {
+  id                    String   @id @default(uuid())
+  userId                String
+  businessLicenseFileUrl String
+  taxIdFileUrl          String
+  status                String
+  adminNotes            String?
+  submittedAt           DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("company_verification")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  companyId   String
+  name        String
+  description String?
+  imageUrl    String?
+  status      String   @default("pending")
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  company User @relation(fields: [companyId], references: [id])
+
+  @@map("products")
+}
+
+model Promotion {
+  id          String   @id @default(uuid())
+  companyId   String
+  title       String
+  description String?
+  imageUrl    String?
+  link        String?
+  status      String   @default("pending")
+  views       Int      @default(0)
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company User @relation(fields: [companyId], references: [id])
+
+  @@map("promotions")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  companyId     String
+  amount        Int
+  status        String   @default("pending")
+  transactionId String?
+  createdAt     DateTime @default(now())
+
+  company User @relation(fields: [companyId], references: [id])
+
+  @@map("payments")
+}
+
+model Donation {
+  id              Int      @id @default(1)
+  totalMoney      Int      @default(0)
+  padsDistributed Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@map("donations")
+}
