@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Search, Bell, PlusCircle, User, LogOut, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm transition-colors">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         
         {/* Left Section: Logo & Search */}
@@ -41,23 +42,23 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Search products, launches, etc..."
-              className="block w-64 rounded-full border-0 bg-gray-100 py-2 pl-10 pr-3 text-base text-gray-900 focus:bg-white focus:ring-2 focus:ring-orange-500 sm:text-base sm:leading-6"
+              className="block w-64 rounded-full border-0 bg-gray-100 dark:bg-gray-700 dark:text-white py-2 pl-10 pr-3 text-base text-gray-900 focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-orange-500 sm:text-base sm:leading-6 transition-colors"
             />
           </div>
         </div>
 
         {/* Middle Section: Navigation Links */}
         <div className="hidden space-x-8 md:flex">
-          <Link href="/promotions" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
+          <Link href="/promotions" className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
             Launches
           </Link>
-          <Link href="/news" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
+          <Link href="/news" className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
             News
           </Link>
-          <Link href="/forums" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
+          <Link href="/forums" className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
             Forums
           </Link>
-          <Link href="/advertise" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
+          <Link href="/advertise" className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
             Advertise
           </Link>
         </div>
@@ -66,12 +67,14 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           <Link 
             href="/company/register" 
-            className="hidden items-center space-x-1 rounded-full border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 md:flex transition-colors"
+            className="hidden items-center space-x-1 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 md:flex transition-colors"
           >
             <PlusCircle className="h-4 w-4 text-gray-500" />
             <span>Submit</span>
           </Link>
           
+          <ThemeToggle />
+
           <button className="rounded-full p-2 text-gray-500 hover:bg-gray-100 transition-colors">
             <Bell className="h-5 w-5" />
           </button>
@@ -88,16 +91,16 @@ export default function Navbar() {
               
               {/* Dropdown Menu */}
               {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   {session.user?.role === "COMPANY" && (
-                     <Link href="/company/dashboard" className="flex px-4 py-2 text-base text-gray-700 hover:bg-gray-100 items-center">
+                     <Link href="/company/dashboard" className="flex px-4 py-2 text-base text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 items-center">
                         <LayoutDashboard className="h-4 w-4 mr-2" />
                         Dashboard
                      </Link>
                   )}
                   <button
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className="flex w-full px-4 py-2 text-base text-orange-600 hover:bg-gray-100 items-center"
+                    className="flex w-full px-4 py-2 text-base text-orange-600 dark:text-orange-400 hover:bg-gray-100 dark:hover:bg-gray-700 items-center"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out

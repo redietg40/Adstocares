@@ -31,6 +31,14 @@ export async function POST(request) {
       data: { status },
     });
 
+    // If approved, increase trust score of the company
+    if (action === "approve") {
+      await prisma.user.update({
+        where: { id: promotion.companyId },
+        data: { trustScore: { increment: 1 } },
+      });
+    }
+
     return NextResponse.json({ success: true, promotion });
   } catch (error) {
     console.error("Error:", error);

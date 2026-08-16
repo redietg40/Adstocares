@@ -59,12 +59,14 @@ export async function POST(request) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
+    const isTrusted = user.trustScore >= 3;
+
     const promotion = await prisma.promotion.create({
       data: {
         title,
         description: description || "",
         link: link || null,
-        status: "pending",
+        status: isTrusted ? "approved" : "pending",
         companyId: user.id,
       },
     });
