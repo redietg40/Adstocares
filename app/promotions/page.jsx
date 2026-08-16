@@ -2,14 +2,38 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowUp, MessageCircle, ExternalLink } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function PromotionsPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [localUpvotes, setLocalUpvotes] = useState({});
+
+  const handleUpvote = (e, id) => {
+    e.stopPropagation();
+    if (!session) {
+      alert("Please sign in or register to upvote products!");
+      router.push('/company/register');
+      return;
+    }
+    setLocalUpvotes(prev => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1
+    }));
+  };
+
+  const handleComment = (e, promo) => {
+    e.stopPropagation();
+    setSelectedPromo(promo);
+    setShowModal(true);
+  };
 
   useEffect(() => {
     fetch("/api/promotions")
@@ -160,13 +184,13 @@ export default function PromotionsPage() {
 
                     {/* Right side stats/buttons */}
                     <div className="flex items-center gap-4 flex-shrink-0">
-                      <div className="hidden md:flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                      <button onClick={(e) => handleComment(e, promo)} className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors bg-transparent border-none">
                         <MessageCircle size={18} />
-                        <span className="text-xs font-medium mt-1">0</span>
-                      </div>
-                      <button className="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:border-gray-400 dark:hover:border-gray-500 transition-colors text-gray-700 dark:text-gray-200">
+                        <span className="text-xs font-medium mt-1">3</span>
+                      </button>
+                      <button onClick={(e) => handleUpvote(e, promo.id)} className="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:border-orange-400 dark:hover:border-orange-500 transition-colors text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400">
                         <ArrowUp size={16} className="mb-0.5 font-bold" />
-                        <span className="text-xs font-bold">0</span>
+                        <span className="text-xs font-bold">{localUpvotes[promo.id] || 0}</span>
                       </button>
                     </div>
                   </div>
@@ -231,8 +255,8 @@ export default function PromotionsPage() {
                     <h4 className="font-semibold text-gray-900 dark:text-white">Maker</h4>
                     <p className="text-gray-600 dark:text-gray-300 truncate">{selectedPromo.company?.companyName || "Unknown Company"}</p>
                  </div>
-                 <button className="flex items-center gap-2 flex-shrink-0 bg-[#FF6154] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#e04f43] transition shadow-md">
-                    UPVOTE <span className="opacity-80">(0)</span>
+                 <button onClick={(e) => handleUpvote(e, selectedPromo.id)} className="flex items-center gap-2 flex-shrink-0 bg-[#FF6154] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#e04f43] transition shadow-md">
+                    UPVOTE <span className="opacity-80">({localUpvotes[selectedPromo.id] || 0})</span>
                  </button>
               </div>
 
