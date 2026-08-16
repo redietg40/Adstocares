@@ -15,6 +15,8 @@ export default function PromotionsPage() {
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [localUpvotes, setLocalUpvotes] = useState({});
+  const [commentText, setCommentText] = useState("");
+  const [localComments, setLocalComments] = useState({});
 
   const handleUpvote = (e, id) => {
     e.stopPropagation();
@@ -27,6 +29,29 @@ export default function PromotionsPage() {
       ...prev,
       [id]: (prev[id] || 0) + 1
     }));
+  };
+
+  const handlePostComment = () => {
+    if (!session) {
+      alert("Please sign in or register to post a comment!");
+      router.push('/company/register');
+      return;
+    }
+    if (!commentText.trim()) return;
+
+    const newComment = {
+      id: Date.now(),
+      user: session.user?.name || "User",
+      time: "Just now",
+      text: commentText,
+      avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
+    };
+
+    setLocalComments(prev => ({
+      ...prev,
+      [selectedPromo.id]: [newComment, ...(prev[selectedPromo.id] || [])]
+    }));
+    setCommentText("");
   };
 
   const handleComment = (e, promo) => {

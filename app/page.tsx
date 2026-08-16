@@ -27,7 +27,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-50">
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,24 +47,24 @@ export default function HomePage() {
                 }}
               />
               {/* Fallback div if image doesn't load */}
-              <div className="w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl items-center justify-center hidden">
+              <div className="w-14 h-14 bg-gradient-to-r from-orange-600 to-orange-600 rounded-xl items-center justify-center hidden">
                 <span className="text-white font-bold text-xl">A2C</span>
               </div>
               <div>
-                <span className="font-bold text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="font-bold text-2xl bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-transparent">
                   Ad2Care
                 </span>
                 <p className="text-sm text-gray-500">Promote • Empower</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/promotions" className="text-gray-700 hover:text-purple-600 transition">
+              <Link href="/promotions" className="text-gray-700 hover:text-orange-600 transition">
                 Promotions
               </Link>
-              <Link href="/company/login" className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+              <Link href="/company/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
                 Login
               </Link>
-              <Link href="/company/register" className="border border-purple-600 text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-50 transition">
+              <Link href="/company/register" className="border border-orange-600 text-orange-600 px-4 py-2 rounded-lg hover:bg-orange-50 transition">
                 Register
               </Link>
             </div>
@@ -74,7 +74,7 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/10 to-orange-600/10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center">
             {/* Large Logo in Hero Section */}
@@ -91,13 +91,13 @@ export default function HomePage() {
                   e.target.nextSibling.style.display = 'flex';
                 }}
               />
-              <div className="w-[120px] h-[120px] bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl items-center justify-center hidden shadow-lg">
+              <div className="w-[120px] h-[120px] bg-gradient-to-r from-orange-600 to-orange-600 rounded-2xl items-center justify-center hidden shadow-lg">
                 <span className="text-white font-bold text-4xl">A2C</span>
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
               Promote Products.
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-600">
                 {" "}Empower Women.
               </span>
             </h1>
@@ -106,10 +106,10 @@ export default function HomePage() {
               Every promotion helps fund sanitary pads for students in need.
             </p>
             <div className="flex justify-center gap-4">
-              <Link href="/company/register" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition transform hover:scale-105">
+              <Link href="/company/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition transform hover:scale-105">
                 Get Started
               </Link>
-              <Link href="/promotions"  className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-xl font-semibold hover:bg-purple-50 transition">
+              <Link href="/promotions"  className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 transition">
                 View Promotions
               </Link>
             </div>
@@ -123,21 +123,21 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Platform Goals</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🎯</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Empower Women</h3>
               <p className="text-gray-600">Support women's education by funding sanitary pads for students in need.</p>
             </div>
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">📈</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Boost Businesses</h3>
               <p className="text-gray-600">Help companies reach their target audience through effective promotions.</p>
             </div>
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🌍</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Create Impact</h3>
@@ -148,27 +148,27 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-gradient-to-r from-purple-50 to-pink-50">
+      <section className="py-16 bg-gradient-to-r from-orange-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">How It Works</h2>
           <div className="grid md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">1</div>
+              <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">1</div>
               <h3 className="font-semibold mb-2">Company Registers</h3>
               <p className="text-sm text-gray-600">Sign up and get verified</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">2</div>
+              <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">2</div>
               <h3 className="font-semibold mb-2">Create Promotion</h3>
               <p className="text-sm text-gray-600">Submit your promotion</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">3</div>
+              <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">3</div>
               <h3 className="font-semibold mb-2">Admin Approves</h3>
               <p className="text-sm text-gray-600">Content is reviewed</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">4</div>
+              <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">4</div>
               <h3 className="font-semibold mb-2">Make Payment</h3>
               <p className="text-sm text-gray-600">Pay to go LIVE</p>
             </div>
@@ -183,13 +183,13 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Featured Promotions</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {promotions.map((promo) => (
-                <div key={promo.id} className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-md hover:shadow-xl transition">
+                <div key={promo.id} className="bg-gradient-to-br from-orange-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-xl transition">
                   <h3 className="font-bold text-lg text-gray-800">{promo.title}</h3>
                   <p className="text-gray-600 text-sm mt-2 line-clamp-2">{promo.description}</p>
-                  <p className="text-purple-600 text-xs mt-2">🏢 {promo.company?.companyName}</p>
+                  <p className="text-orange-600 text-xs mt-2">🏢 {promo.company?.companyName}</p>
                   <button
                     onClick={() => handleViewPromoDetails(promo)}
-                    className="mt-4 text-purple-600 font-semibold text-sm hover:text-purple-700"
+                    className="mt-4 text-orange-600 font-semibold text-sm hover:text-orange-700"
                   >
                     View Details →
                   </button>
@@ -197,7 +197,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="text-center mt-8">
-              <Link href="/promotions" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link href="/promotions" className="text-orange-600 hover:text-orange-700 font-semibold">
                 View All Promotions →
               </Link>
             </div>
@@ -255,21 +255,21 @@ export default function HomePage() {
       </section>
 
       {/* Impact Section */}
-      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600">
+      <section className="py-16 bg-gradient-to-r from-orange-600 to-orange-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">Our Impact So Far</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <div className="text-4xl font-bold text-white mb-2">120+</div>
-              <p className="text-purple-100">Pads Donated</p>
+              <p className="text-orange-100">Pads Donated</p>
             </div>
             <div>
               <div className="text-4xl font-bold text-white mb-2">5+</div>
-              <p className="text-purple-100">Companies Joined</p>
+              <p className="text-orange-100">Companies Joined</p>
             </div>
             <div>
               <div className="text-4xl font-bold text-white mb-2">200+</div>
-              <p className="text-purple-100">Students Supported</p>
+              <p className="text-orange-100">Students Supported</p>
             </div>
           </div>
         </div>
@@ -301,17 +301,17 @@ export default function HomePage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-purple-50 to-pink-50">
+      <section className="py-16 bg-gradient-to-r from-orange-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Make an Impact?</h2>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
             Join our platform today and start promoting your products while supporting women's education.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/company/register" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition">
+            <Link href="/company/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition">
               Register Your Company
             </Link>
-            <Link href="/company/login" className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-xl font-semibold hover:bg-purple-50 transition">
+            <Link href="/company/login" className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 transition">
               Login
             </Link>
           </div>
@@ -336,7 +336,7 @@ export default function HomePage() {
                     e.target.nextSibling.style.display = 'flex';
                   }}
                 />
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg items-center justify-center hidden">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-600 rounded-lg items-center justify-center hidden">
                   <span className="text-white font-bold text-base">A2C</span>
                 </div>
                 <span className="font-bold text-xl">Ad2Care</span>
@@ -379,7 +379,7 @@ export default function HomePage() {
       {showPolicy && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
+            <div className="bg-gradient-to-r from-orange-600 to-orange-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
               <h3 className="text-xl font-bold text-white">Terms of Service</h3>
               <button onClick={() => setShowPolicy(false)} className="text-white text-2xl">×</button>
             </div>
@@ -404,7 +404,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="p-5 border-t flex justify-end">
-              <button onClick={() => setShowPolicy(false)} className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">Close</button>
+              <button onClick={() => setShowPolicy(false)} className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700">Close</button>
             </div>
           </div>
         </div>
@@ -414,7 +414,7 @@ export default function HomePage() {
       {showPromoModal && selectedPromo && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
+            <div className="bg-gradient-to-r from-orange-600 to-orange-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
               <h3 className="text-xl font-bold text-white">{selectedPromo.title}</h3>
               <button onClick={() => setShowPromoModal(false)} className="text-white text-2xl">×</button>
             </div>
@@ -424,7 +424,7 @@ export default function HomePage() {
               <p className="text-sm text-gray-500">Description</p>
               <p className="text-gray-700 mb-4">{selectedPromo.description || "No description available"}</p>
               {selectedPromo.link && (
-                <a href={selectedPromo.link} target="_blank" rel="noopener noreferrer" className="block w-full bg-purple-600 text-white text-center py-2 rounded-lg hover:bg-purple-700">
+                <a href={selectedPromo.link} target="_blank" rel="noopener noreferrer" className="block w-full bg-orange-600 text-white text-center py-2 rounded-lg hover:bg-orange-700">
                   Visit Promotion →
                 </a>
               )}
