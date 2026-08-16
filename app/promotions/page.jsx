@@ -17,14 +17,21 @@ export default function PromotionsPage() {
   const [localUpvotes, setLocalUpvotes] = useState({});
   const [commentText, setCommentText] = useState("");
   const [localComments, setLocalComments] = useState({});
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalConfig, setAuthModalConfig] = useState({ title: "", action: "" });
 
   const handleUpvote = (e, id) => {
     e.stopPropagation();
-    if (!session) {
-      alert("Please sign in or register to upvote products!");
-      router.push('/company/register');
+    // Block upvotes if not logged in OR if they are a Company (only normal users should upvote)
+    if (!session || session.user?.role === "COMPANY") {
+      setAuthModalConfig({
+        title: "Sign up as a User to upvote",
+        action: "Companies cannot upvote. Join our community as a regular user to discover and vote on products!"
+      });
+      setShowAuthModal(true);
       return;
     }
+
     setLocalUpvotes(prev => ({
       ...prev,
       [id]: (prev[id] || 0) + 1
@@ -32,9 +39,12 @@ export default function PromotionsPage() {
   };
 
   const handlePostComment = () => {
-    if (!session) {
-      alert("Please sign in or register to post a comment!");
-      router.push('/company/register');
+    if (!session || session.user?.role === "COMPANY") {
+      setAuthModalConfig({
+        title: "Sign up as a User to comment",
+        action: "Companies cannot post comments. Join the conversation as a regular user!"
+      });
+      setShowAuthModal(true);
       return;
     }
     if (!commentText.trim()) return;
@@ -291,7 +301,7 @@ export default function PromotionsPage() {
               </p>
 
               {selectedPromo.link && (
-                <div className="pt-6 border-t border-gray-100 dark:border-gray-700">
+                <div className="pt-6 border-t border-gray-100 dark:border-gray-700 mb-6">
                   <a 
                     href={selectedPromo.link} 
                     target="_blank" 
@@ -302,6 +312,110 @@ export default function PromotionsPage() {
                   </a>
                 </div>
               )}
+
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-6 mt-2">
+                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Comments ({(localComments[selectedPromo.id] || []).length + 2})</h4>
+                
+                {/* Comment Input */}
+                <div className="flex gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold">
+                    {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <div className="flex-1">
+                    <textarea 
+                      placeholder="What do you think about this product?" 
+                      className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-colors"
+                      rows="3"
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                    ></textarea>
+                    <div className="flex justify-end mt-2">
+                      <button onClick={handlePostComment} className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
+                        Post Comment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mock Comments List */}
+                <div className="space-y-4">
+                  {(localComments[selectedPromo.id] || []).map((comment) => (
+                    <div key={comment.id} className="flex gap-3">
+                      <div className={`w-8 h-8 rounded-full ${comment.avatarColor} flex-shrink-0 flex items-center justify-center font-bold text-xs`}>
+                        {comment.user.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-semibold text-gray-900 dark:text-white text-sm">{comment.user}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">{comment.time}</span>
+                        </div>
+                        <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">{comment.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Default Fake Comments (Always visible at the bottom for demo) */}
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center font-bold text-xs text-gray-500">T</div>
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-semibold text-gray-900 dark:text-white text-sm">TechEnthusiast</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">2 hours ago</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">This is exactly what I've been looking for! Are there any plans to release an iOS version?</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex-shrink-0 flex items-center justify-center font-bold text-xs text-blue-500">S</div>
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-semibold text-gray-900 dark:text-white text-sm">SarahDev</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">5 hours ago</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">Really clean UI. Great job to the team who built this. Voted!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auth Modal (Like Product Hunt) */}
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-4 flex justify-between items-center">
+              <div className="w-8"></div> {/* Spacer for centering */}
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center -mb-8 z-10 border-4 border-white dark:border-gray-800 shadow-sm relative">
+                 <span className="text-3xl relative top-[-2px]">🚀</span>
+              </div>
+              <button onClick={() => setShowAuthModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl font-light">×</button>
+            </div>
+            
+            <div className="p-8 pt-10 text-center">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{authModalConfig.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-8">{authModalConfig.action}</p>
+              
+              <div className="space-y-3">
+                <Link 
+                  href="/company/register" 
+                  className="flex items-center justify-center w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-sm"
+                >
+                  <span className="mr-2">🏢</span> Register as Company
+                </Link>
+                <Link 
+                  href="/company/login" 
+                  className="flex items-center justify-center w-full bg-orange-500 text-white border border-transparent px-4 py-3 rounded-xl font-semibold hover:bg-orange-600 transition shadow-md"
+                >
+                  <span className="mr-2">✉️</span> Sign in with Email
+                </Link>
+              </div>
+
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-6">
+                We never post to any of your accounts without your permission.
+              </p>
             </div>
           </div>
         </div>
