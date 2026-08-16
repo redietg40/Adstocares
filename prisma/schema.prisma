@@ -21,6 +21,8 @@ model User {
   products      Product[]
   payments      Payment[]
   promotions    Promotion[]
+  upvotes       Upvote[]
+  comments      Comment[]
 
   @@map("users")
 }
@@ -64,12 +66,45 @@ model Promotion {
   status      String   @default("pending")
   views       Int      @default(0)
   clicks      Int      @default(0)
+  
+  // Freemium Strategy Fields
+  isSponsored Boolean  @default(false)
+  karmaAmount Int      @default(0) // The amount donated to the pad fund
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  company User @relation(fields: [companyId], references: [id])
+  company  User      @relation(fields: [companyId], references: [id])
+  upvotes  Upvote[]
+  comments Comment[]
 
   @@map("promotions")
+}
+
+model Upvote {
+  id          String   @id @default(uuid())
+  userId      String
+  promotionId String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+
+  @@unique([userId, promotionId])
+  @@map("upvotes")
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  userId      String
+  promotionId String
+  content     String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+
+  @@map("comments")
 }
 
 model Payment {

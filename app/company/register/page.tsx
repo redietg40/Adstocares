@@ -165,7 +165,7 @@ export default function CompanyRegisterPage() {
                 </form>
 
                 <div className="text-center mt-4">
-                    <Link href="/login" className="text-purple-600 hover:text-purple-500">
+                    <Link href="/company/login" className="text-purple-600 hover:text-purple-500">
                         Already have an account? Sign in
                     </Link>
                 </div>

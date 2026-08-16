@@ -16,10 +16,20 @@ export default function Navbar() {
         {/* Left Section: Logo & Search */}
         <div className="flex items-center space-x-6">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 font-bold text-white shadow-sm">
+            <img 
+              src="/logoswomen.jpg" 
+              alt="Ad2Care Logo" 
+              className="h-10 w-auto rounded-full"
+              onError={(e) => {
+                // Fallback if they haven't saved the image yet
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <div className="hidden h-10 w-10 items-center justify-center rounded-full bg-orange-500 font-bold text-white shadow-sm">
               A2C
             </div>
-            <span className="hidden text-xl font-bold tracking-tight text-gray-900 md:block">
+            <span className="hidden text-2xl font-bold tracking-tight text-orange-600 md:block">
               Ad2Care
             </span>
           </Link>
@@ -31,23 +41,23 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Search products, launches, etc..."
-              className="block w-64 rounded-full border-0 bg-gray-100 py-2 pl-10 pr-3 text-sm text-gray-900 focus:bg-white focus:ring-2 focus:ring-red-500 sm:text-sm sm:leading-6"
+              className="block w-64 rounded-full border-0 bg-gray-100 py-2 pl-10 pr-3 text-base text-gray-900 focus:bg-white focus:ring-2 focus:ring-orange-500 sm:text-base sm:leading-6"
             />
           </div>
         </div>
 
         {/* Middle Section: Navigation Links */}
         <div className="hidden space-x-8 md:flex">
-          <Link href="/promotions" className="text-sm font-medium text-gray-700 hover:text-red-600 transition-colors">
+          <Link href="/promotions" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
             Launches
           </Link>
-          <Link href="/news" className="text-sm font-medium text-gray-700 hover:text-red-600 transition-colors">
+          <Link href="/news" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
             News
           </Link>
-          <Link href="/forums" className="text-sm font-medium text-gray-700 hover:text-red-600 transition-colors">
+          <Link href="/forums" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
             Forums
           </Link>
-          <Link href="/advertise" className="text-sm font-medium text-gray-700 hover:text-red-600 transition-colors">
+          <Link href="/advertise" className="text-base font-medium text-gray-700 hover:text-orange-600 transition-colors">
             Advertise
           </Link>
         </div>
@@ -56,7 +66,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           <Link 
             href="/company/register" 
-            className="hidden items-center space-x-1 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 md:flex transition-colors"
+            className="hidden items-center space-x-1 rounded-full border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 md:flex transition-colors"
           >
             <PlusCircle className="h-4 w-4 text-gray-500" />
             <span>Submit</span>
@@ -71,7 +81,7 @@ export default function Navbar() {
             <div className="relative">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-600 text-sm font-bold text-white shadow-sm ring-2 ring-white hover:ring-gray-200 transition-all"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-base font-bold text-white shadow-sm ring-2 ring-white hover:ring-gray-200 transition-all"
               >
                 {session.user?.email?.[0].toUpperCase()}
               </button>
@@ -80,14 +90,14 @@ export default function Navbar() {
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   {session.user?.role === "COMPANY" && (
-                     <Link href="/company/dashboard" className="flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 items-center">
+                     <Link href="/company/dashboard" className="flex px-4 py-2 text-base text-gray-700 hover:bg-gray-100 items-center">
                         <LayoutDashboard className="h-4 w-4 mr-2" />
                         Dashboard
                      </Link>
                   )}
                   <button
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className="flex w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 items-center"
+                    className="flex w-full px-4 py-2 text-base text-orange-600 hover:bg-gray-100 items-center"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -98,7 +108,7 @@ export default function Navbar() {
           ) : (
             <Link 
               href="/company/login"
-              className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors shadow-sm"
+              className="rounded-full bg-orange-500 px-4 py-2 text-base font-semibold text-white hover:bg-orange-600 transition-colors shadow-sm"
             >
               Sign in
             </Link>
