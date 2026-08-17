@@ -318,8 +318,8 @@ export default function PromotionsPage() {
                 
                 {/* Comment Input */}
                 <div className="flex gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold">
-                    {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "U"}
+                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold uppercase">
+                    {session?.user?.name ? session.user.name.charAt(0) : (session?.user?.email ? session.user.email.charAt(0) : "U")}
                   </div>
                   <div className="flex-1">
                     <textarea 

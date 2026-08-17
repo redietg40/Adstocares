@@ -21,7 +21,7 @@ export default function AdvertisePage() {
             <li className="flex items-center gap-3">✅ Community upvotes & comments</li>
             <li className="flex items-center gap-3">✅ Basic analytics tracking</li>
           </ul>
-          <Link href="/company/register" className="block w-full py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-center font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+          <Link href="/company/register?plan=free" className="block w-full py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-center font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
             Start Free
           </Link>
         </div>
@@ -40,7 +40,7 @@ export default function AdvertisePage() {
             <li className="flex items-center gap-3">✨ "Karma Badge" on your product</li>
             <li className="flex items-center gap-3">📈 Premium analytics dashboard</li>
           </ul>
-          <Link href="/company/register" className="block w-full py-3 px-4 bg-orange-500 text-white text-center font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-md">
+          <Link href="/company/register?plan=boost" className="block w-full py-3 px-4 bg-orange-500 text-white text-center font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-md">
             Boost Your Product
           </Link>
         </div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -73,9 +73,13 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/10 to-orange-600/10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+      <section className="relative overflow-hidden bg-gray-900">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-70 dark:opacity-50"
+          style={{ backgroundImage: "url('/hero-bg.png')" }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/10 dark:from-black/70 dark:to-black/30"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center">
             {/* Large Logo in Hero Section */}
             <div className="flex justify-center mb-6">
@@ -95,13 +99,13 @@ export default function HomePage() {
                 <span className="text-white font-bold text-4xl">A2C</span>
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
               Promote Products.
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-500">
                 {" "}Empower Women.
               </span>
             </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow-md">
               Join Ad2Care to promote your products and support women's education.
               Every promotion helps fund sanitary pads for students in need.
             </p>
@@ -109,7 +113,7 @@ export default function HomePage() {
               <Link href="/company/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition transform hover:scale-105">
                 Get Started
               </Link>
-              <Link href="/promotions"  className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 transition">
+              <Link href="/promotions"  className="bg-white/10 backdrop-blur-md border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-orange-600 transition">
                 View Promotions
               </Link>
             </div>

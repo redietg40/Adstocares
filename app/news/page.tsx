@@ -12,17 +12,12 @@ export default function NewsPage() {
         <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">Stay updated with platform features and milestones.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockNews.map((news) => (
-          <div key={news.id} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow cursor-pointer">
-            <span className="text-xs font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider">{news.category}</span>
-            <h3 className="mt-3 text-xl font-bold text-gray-900 dark:text-white leading-tight">{news.title}</h3>
-            <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-              <span>{news.date}</span>
-              <span>{news.readTime}</span>
-            </div>
-          </div>
-        ))}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-12 text-center">
+        <div className="text-5xl mb-4">📰</div>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No News Yet</h3>
+        <p className="text-gray-500 dark:text-gray-400">
+          Until now there is no news. Check back later for real updates!
+        </p>
       </div>
     </div>
   );

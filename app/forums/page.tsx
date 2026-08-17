@@ -17,27 +17,12 @@ export default function ForumsPage() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-        <div className="divide-y divide-gray-100 dark:divide-gray-700">
-          {mockTopics.map((topic) => (
-            <div key={topic.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{topic.title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Started by <span className="font-medium text-gray-700 dark:text-gray-300">{topic.author}</span></p>
-              </div>
-              <div className="flex gap-6 text-sm text-gray-500 dark:text-gray-400 text-center">
-                <div>
-                  <span className="block font-bold text-gray-900 dark:text-white">{topic.replies}</span>
-                  Replies
-                </div>
-                <div>
-                  <span className="block font-bold text-gray-900 dark:text-white">{topic.views}</span>
-                  Views
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-12 text-center overflow-hidden">
+        <div className="text-5xl mb-4">💬</div>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Forums Yet</h3>
+        <p className="text-gray-500 dark:text-gray-400">
+          Until now there is no forum. Be the first to start a discussion!
+        </p>
       </div>
     </div>
   );
