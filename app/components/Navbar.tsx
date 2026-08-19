@@ -110,7 +110,7 @@ export default function Navbar() {
             </div>
           ) : (
             <Link 
-              href="/company/login"
+              href="/login"
               className="rounded-full bg-orange-500 px-4 py-2 text-base font-semibold text-white hover:bg-orange-600 transition-colors shadow-sm"
             >
               Sign in

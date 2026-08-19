@@ -15,6 +15,7 @@ export default function PromotionsPage() {
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [localUpvotes, setLocalUpvotes] = useState({});
+  const [userUpvotedProducts, setUserUpvotedProducts] = useState({});
   const [commentText, setCommentText] = useState("");
   const [localComments, setLocalComments] = useState({});
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -22,68 +23,127 @@ export default function PromotionsPage() {
 
   const [toastMessage, setToastMessage] = useState("");
 
-  const handleUpvote = (e, promo) => {
+  const handleUpvote = async (e, promo) => {
     e.stopPropagation();
     if (!session) {
       router.push("/login");
       return;
     }
 
-    // Restrict company from upvoting their OWN product
-    const currentUserId = session.user?.id;
-    const currentUserEmail = session.user?.email;
+    try {
+      const res = await fetch(`/api/promotions/${promo.id}/upvote`, {
+        method: "POST",
+      });
+      const data = await res.json();
 
-    if (
-      (currentUserId && promo.companyId === currentUserId) ||
-      (currentUserId && promo.company?.id === currentUserId) ||
-      (currentUserEmail && promo.company?.email === currentUserEmail)
-    ) {
-      setToastMessage("You cannot upvote your own product!");
-      setTimeout(() => setToastMessage(""), 3000);
-      return;
+      if (!res.ok) {
+        setToastMessage(data.error || "Could not process upvote");
+        setTimeout(() => setToastMessage(""), 3000);
+        return;
+      }
+
+      // Update state with persistent DB counts
+      setUserUpvotedProducts((prev) => ({
+        ...prev,
+        [promo.id]: data.hasUpvoted,
+      }));
+
+      setLocalUpvotes((prev) => ({
+        ...prev,
+        [promo.id]: data.totalUpvotes,
+      }));
+
+      if (!data.hasUpvoted) {
+        setToastMessage("Upvote removed");
+        setTimeout(() => setToastMessage(""), 2000);
+      }
+    } catch (err) {
+      console.error("Upvote error:", err);
     }
-
-    setLocalUpvotes((prev) => ({
-      ...prev,
-      [promo.id]: (prev[promo.id] || 0) + 1,
-    }));
   };
 
-  const handlePostComment = () => {
+  const handlePostComment = async () => {
     if (!session) {
       router.push("/login");
       return;
     }
-    if (!commentText.trim()) return;
+    if (!commentText.trim() || !selectedPromo) return;
 
-    const userName = session.user?.companyName || session.user?.name || session.user?.email?.split('@')[0] || "User";
+    try {
+      const res = await fetch(`/api/promotions/${selectedPromo.id}/comment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: commentText.trim() }),
+      });
 
-    const newComment = {
-      id: Date.now(),
-      user: userName,
-      time: "Just now",
-      text: commentText,
-      avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
-    };
+      const data = await res.json();
 
-    setLocalComments(prev => ({
-      ...prev,
-      [selectedPromo.id]: [newComment, ...(prev[selectedPromo.id] || [])]
-    }));
-    setCommentText("");
+      if (res.ok && data.comment) {
+        const formattedComment = {
+          id: data.comment.id,
+          user: data.comment.user?.companyName || data.comment.user?.email?.split("@")[0] || "User",
+          time: "Just now",
+          text: data.comment.content,
+          avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
+        };
+
+        setLocalComments((prev) => ({
+          ...prev,
+          [selectedPromo.id]: [formattedComment, ...(prev[selectedPromo.id] || [])],
+        }));
+        setCommentText("");
+      }
+    } catch (err) {
+      console.error("Post comment error:", err);
+    }
   };
 
   const handleComment = (e, promo) => {
     e.stopPropagation();
     setSelectedPromo(promo);
     setShowModal(true);
+    fetchCommentsForPromo(promo.id);
+  };
+
+  const fetchCommentsForPromo = (promoId) => {
+    fetch(`/api/promotions/${promoId}/comment`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const formatted = data.map((c) => ({
+            id: c.id,
+            user: c.user?.companyName || c.user?.email?.split("@")[0] || "User",
+            time: new Date(c.createdAt).toLocaleDateString(),
+            text: c.content,
+            avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
+          }));
+          setLocalComments((prev) => ({ ...prev, [promoId]: formatted }));
+        }
+      })
+      .catch(console.error);
   };
 
   useEffect(() => {
     fetch("/api/promotions")
       .then((res) => res.json())
       .then((data) => {
-        setPromotions(Array.isArray(data) ? data : []);
+        if (Array.isArray(data)) {
+          setPromotions(data);
+          // Initialize DB counts and user voted state
+          const upvotesMap = {};
+          const userVotedMap = {};
+          const currentUserId = session?.user?.id;
+
+          data.forEach((p) => {
+            upvotesMap[p.id] = p._count?.upvotes || 0;
+            if (currentUserId && p.upvotes) {
+              userVotedMap[p.id] = p.upvotes.some((u) => u.userId === currentUserId);
+            }
+          });
+
+          setLocalUpvotes(upvotesMap);
+          setUserUpvotedProducts(userVotedMap);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -91,7 +151,7 @@ export default function PromotionsPage() {
         setPromotions([]);
         setLoading(false);
       });
-  }, []);
+  }, [session]);
 
   const filteredPromotions = promotions.filter(
     (promo) =>
@@ -249,9 +309,16 @@ export default function PromotionsPage() {
                     <div className="flex items-center gap-4 flex-shrink-0">
                       <button onClick={(e) => handleComment(e, promo)} className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors bg-transparent border-none">
                         <MessageCircle size={18} />
-                        <span className="text-xs font-medium mt-1">3</span>
+                        <span className="text-xs font-medium mt-1">{(promo._count?.comments || 0)}</span>
                       </button>
-                      <button onClick={(e) => handleUpvote(e, promo)} className="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:border-orange-400 dark:hover:border-orange-500 transition-colors text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400">
+                      <button 
+                        onClick={(e) => handleUpvote(e, promo)} 
+                        className={`flex flex-col items-center justify-center w-14 h-14 border rounded-md transition-colors ${
+                          userUpvotedProducts[promo.id]
+                            ? "bg-orange-50 dark:bg-orange-950/40 border-orange-500 text-orange-600 dark:text-orange-400 font-bold"
+                            : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-orange-400 dark:hover:border-orange-500 hover:text-orange-500 dark:hover:text-orange-400"
+                        }`}
+                      >
                         <ArrowUp size={16} className="mb-0.5 font-bold" />
                         <span className="text-xs font-bold">{localUpvotes[promo.id] || 0}</span>
                       </button>
@@ -318,8 +385,15 @@ export default function PromotionsPage() {
                     <h4 className="font-semibold text-gray-900 dark:text-white">Maker</h4>
                     <p className="text-gray-600 dark:text-gray-300 truncate">{selectedPromo.company?.companyName || "Unknown Company"}</p>
                  </div>
-                 <button onClick={(e) => handleUpvote(e, selectedPromo)} className="flex items-center gap-2 flex-shrink-0 bg-[#FF6154] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#e04f43] transition shadow-md">
-                    UPVOTE <span className="opacity-80">({localUpvotes[selectedPromo.id] || 0})</span>
+                 <button 
+                    onClick={(e) => handleUpvote(e, selectedPromo)} 
+                    className={`flex items-center gap-2 flex-shrink-0 px-6 py-3 rounded-md font-semibold transition shadow-md ${
+                      userUpvotedProducts[selectedPromo.id]
+                        ? "bg-orange-600 text-white hover:bg-orange-700"
+                        : "bg-[#FF6154] text-white hover:bg-[#e04f43]"
+                    }`}
+                 >
+                    {userUpvotedProducts[selectedPromo.id] ? "UPVOTED ✓" : "UPVOTE"} <span className="opacity-80">({localUpvotes[selectedPromo.id] || 0})</span>
                  </button>
               </div>
 
@@ -428,17 +502,23 @@ export default function PromotionsPage() {
               
               <div className="space-y-3">
                 <Link 
-                  href="/company/register" 
-                  className="flex items-center justify-center w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-sm"
+                  href="/register" 
+                  className="flex items-center justify-center w-full bg-orange-500 text-white px-4 py-3 rounded-xl font-semibold hover:bg-orange-600 transition shadow-md"
                 >
-                  <span className="mr-2">🏢</span> Register as Company
+                  <span className="mr-2">👤</span> Create User Account
                 </Link>
                 <Link 
-                  href="/company/login" 
-                  className="flex items-center justify-center w-full bg-orange-500 text-white border border-transparent px-4 py-3 rounded-xl font-semibold hover:bg-orange-600 transition shadow-md"
+                  href="/login" 
+                  className="flex items-center justify-center w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 px-4 py-3 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-sm"
                 >
-                  <span className="mr-2">✉️</span> Sign in with Email
+                  <span className="mr-2">✉️</span> User Sign In
                 </Link>
+                <div className="pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-center gap-4 text-xs text-gray-500">
+                  <span>Are you a business?</span>
+                  <Link href="/company/login" className="text-orange-500 hover:underline font-semibold">
+                    Company Sign In
+                  </Link>
+                </div>
               </div>
 
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-6">
