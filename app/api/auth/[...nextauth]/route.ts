@@ -47,6 +47,7 @@ export const authOptions = {
         return {
           id: user.id,
           email: user.email,
+          name: user.companyName || user.email.split('@')[0],
           role: user.role,
           isVerified: user.isVerified,
           companyName: user.companyName,
@@ -58,6 +59,7 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name || user.companyName || user.email?.split('@')[0];
         token.role = user.role;
         token.isVerified = user.isVerified;
         token.companyName = user.companyName;
@@ -67,6 +69,7 @@ export const authOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
+        session.user.name = token.name;
         session.user.role = token.role;
         session.user.isVerified = token.isVerified;
         session.user.companyName = token.companyName;

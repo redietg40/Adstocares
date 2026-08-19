@@ -20,38 +20,47 @@ export default function PromotionsPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalConfig, setAuthModalConfig] = useState({ title: "", action: "" });
 
-  const handleUpvote = (e, id) => {
+  const [toastMessage, setToastMessage] = useState("");
+
+  const handleUpvote = (e, promo) => {
     e.stopPropagation();
-    // Block upvotes if not logged in OR if they are a Company (only normal users should upvote)
-    if (!session || session.user?.role === "COMPANY") {
-      setAuthModalConfig({
-        title: "Sign up as a User to upvote",
-        action: "Companies cannot upvote. Join our community as a regular user to discover and vote on products!"
-      });
-      setShowAuthModal(true);
+    if (!session) {
+      router.push("/login");
       return;
     }
 
-    setLocalUpvotes(prev => ({
+    // Restrict company from upvoting their OWN product
+    const currentUserId = session.user?.id;
+    const currentUserEmail = session.user?.email;
+
+    if (
+      (currentUserId && promo.companyId === currentUserId) ||
+      (currentUserId && promo.company?.id === currentUserId) ||
+      (currentUserEmail && promo.company?.email === currentUserEmail)
+    ) {
+      setToastMessage("You cannot upvote your own product!");
+      setTimeout(() => setToastMessage(""), 3000);
+      return;
+    }
+
+    setLocalUpvotes((prev) => ({
       ...prev,
-      [id]: (prev[id] || 0) + 1
+      [promo.id]: (prev[promo.id] || 0) + 1,
     }));
   };
 
   const handlePostComment = () => {
-    if (!session || session.user?.role === "COMPANY") {
-      setAuthModalConfig({
-        title: "Sign up as a User to comment",
-        action: "Companies cannot post comments. Join the conversation as a regular user!"
-      });
-      setShowAuthModal(true);
+    if (!session) {
+      router.push("/login");
       return;
     }
     if (!commentText.trim()) return;
 
+    const userName = session.user?.companyName || session.user?.name || session.user?.email?.split('@')[0] || "User";
+
     const newComment = {
       id: Date.now(),
-      user: session.user?.name || "User",
+      user: userName,
       time: "Just now",
       text: commentText,
       avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
@@ -110,7 +119,12 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F9] dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen bg-[#F7F7F9] dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100 transition-colors relative">
+      {toastMessage && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl font-semibold text-sm animate-bounce">
+          ⚠️ {toastMessage}
+        </div>
+      )}
       {/* Navbar (Simplified) */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 transition-colors">
         <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -130,12 +144,26 @@ export default function PromotionsPage() {
                 className="w-64 px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-white border-none rounded-full text-sm focus:ring-2 focus:ring-[#FF6154] outline-none transition-colors"
               />
             </div>
-            <Link
-              href="/login"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
-            >
-              Sign in
-            </Link>
+            {session ? (
+              <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">
+                {session.user?.companyName || session.user?.name || session.user?.email}
+              </span>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -223,7 +251,7 @@ export default function PromotionsPage() {
                         <MessageCircle size={18} />
                         <span className="text-xs font-medium mt-1">3</span>
                       </button>
-                      <button onClick={(e) => handleUpvote(e, promo.id)} className="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:border-orange-400 dark:hover:border-orange-500 transition-colors text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400">
+                      <button onClick={(e) => handleUpvote(e, promo)} className="flex flex-col items-center justify-center w-14 h-14 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:border-orange-400 dark:hover:border-orange-500 transition-colors text-gray-700 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400">
                         <ArrowUp size={16} className="mb-0.5 font-bold" />
                         <span className="text-xs font-bold">{localUpvotes[promo.id] || 0}</span>
                       </button>
@@ -290,7 +318,7 @@ export default function PromotionsPage() {
                     <h4 className="font-semibold text-gray-900 dark:text-white">Maker</h4>
                     <p className="text-gray-600 dark:text-gray-300 truncate">{selectedPromo.company?.companyName || "Unknown Company"}</p>
                  </div>
-                 <button onClick={(e) => handleUpvote(e, selectedPromo.id)} className="flex items-center gap-2 flex-shrink-0 bg-[#FF6154] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#e04f43] transition shadow-md">
+                 <button onClick={(e) => handleUpvote(e, selectedPromo)} className="flex items-center gap-2 flex-shrink-0 bg-[#FF6154] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#e04f43] transition shadow-md">
                     UPVOTE <span className="opacity-80">({localUpvotes[selectedPromo.id] || 0})</span>
                  </button>
               </div>
@@ -319,7 +347,7 @@ export default function PromotionsPage() {
                 {/* Comment Input */}
                 <div className="flex gap-3 mb-6">
                   <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold uppercase">
-                    {session?.user?.name ? session.user.name.charAt(0) : (session?.user?.email ? session.user.email.charAt(0) : "U")}
+                    {(session?.user?.companyName || session?.user?.name || session?.user?.email || "U").charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
                     <textarea 

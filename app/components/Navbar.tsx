@@ -86,7 +86,7 @@ export default function Navbar() {
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-base font-bold text-white shadow-sm ring-2 ring-white hover:ring-gray-200 transition-all"
               >
-                {session.user?.email?.[0].toUpperCase()}
+                {(session.user?.companyName || session.user?.name || session.user?.email || "U")[0].toUpperCase()}
               </button>
               
               {/* Dropdown Menu */}
