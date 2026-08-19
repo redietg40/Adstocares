@@ -6,6 +6,33 @@ import { useRouter } from "next/navigation";
 import { ArrowUp, MessageCircle, ExternalLink } from "lucide-react";
 import { useSession } from "next-auth/react";
 
+function getRelativeTime(dateInput) {
+  if (!dateInput) return "Just now";
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return "Just now";
+
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 10) return "Just now";
+  if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) return `${diffInDays}d ago`;
+
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} mo ago`;
+
+  const diffInYears = Math.floor(diffInMonths / 12);
+  return `${diffInYears}y ago`;
+}
+
 export default function PromotionsPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -82,7 +109,7 @@ export default function PromotionsPage() {
         const formattedComment = {
           id: data.comment.id,
           user: data.comment.user?.companyName || data.comment.user?.email?.split("@")[0] || "User",
-          time: "Just now",
+          time: getRelativeTime(data.comment.createdAt),
           text: data.comment.content,
           avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
         };
@@ -113,7 +140,7 @@ export default function PromotionsPage() {
           const formatted = data.map((c) => ({
             id: c.id,
             user: c.user?.companyName || c.user?.email?.split("@")[0] || "User",
-            time: new Date(c.createdAt).toLocaleDateString(),
+            time: getRelativeTime(c.createdAt),
             text: c.content,
             avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
           }));
@@ -163,6 +190,7 @@ export default function PromotionsPage() {
   const handleViewDetails = (promo) => {
     setSelectedPromo(promo);
     setShowModal(true);
+    fetchCommentsForPromo(promo.id);
     // Track view
     fetch(`/api/promotions/${promo.id}/view`, { method: "POST" }).catch(console.error);
   };
@@ -416,7 +444,9 @@ export default function PromotionsPage() {
               )}
 
               <div className="border-t border-gray-100 dark:border-gray-700 pt-6 mt-2">
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Comments ({(localComments[selectedPromo.id] || []).length + 2})</h4>
+                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                  Comments ({(localComments[selectedPromo.id] || []).length})
+                </h4>
                 
                 {/* Comment Input */}
                 <div className="flex gap-3 mb-6">
@@ -439,44 +469,26 @@ export default function PromotionsPage() {
                   </div>
                 </div>
 
-                {/* Mock Comments List */}
+                {/* Real Database Comments List */}
                 <div className="space-y-4">
-                  {(localComments[selectedPromo.id] || []).map((comment) => (
-                    <div key={comment.id} className="flex gap-3">
-                      <div className={`w-8 h-8 rounded-full ${comment.avatarColor} flex-shrink-0 flex items-center justify-center font-bold text-xs`}>
-                        {comment.user.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="font-semibold text-gray-900 dark:text-white text-sm">{comment.user}</span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">{comment.time}</span>
+                  {(localComments[selectedPromo.id] || []).length === 0 ? (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first to share your thoughts!</p>
+                  ) : (
+                    (localComments[selectedPromo.id] || []).map((comment) => (
+                      <div key={comment.id} className="flex gap-3">
+                        <div className={`w-8 h-8 rounded-full ${comment.avatarColor} flex-shrink-0 flex items-center justify-center font-bold text-xs uppercase`}>
+                          {comment.user.charAt(0).toUpperCase()}
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">{comment.text}</p>
+                        <div>
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-semibold text-gray-900 dark:text-white text-sm">{comment.user}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{comment.time}</span>
+                          </div>
+                          <p className="text-gray-700 dark:text-gray-300 text-sm mt-1 break-words">{comment.text}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  
-                  {/* Default Fake Comments (Always visible at the bottom for demo) */}
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center font-bold text-xs text-gray-500">T</div>
-                    <div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-semibold text-gray-900 dark:text-white text-sm">TechEnthusiast</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">2 hours ago</span>
-                      </div>
-                      <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">This is exactly what I've been looking for! Are there any plans to release an iOS version?</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex-shrink-0 flex items-center justify-center font-bold text-xs text-blue-500">S</div>
-                    <div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-semibold text-gray-900 dark:text-white text-sm">SarahDev</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">5 hours ago</span>
-                      </div>
-                      <p className="text-gray-700 dark:text-gray-300 text-sm mt-1">Really clean UI. Great job to the team who built this. Voted!</p>
-                    </div>
-                  </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
