@@ -448,26 +448,48 @@ export default function PromotionsPage() {
                   Comments ({(localComments[selectedPromo.id] || []).length})
                 </h4>
                 
-                {/* Comment Input */}
-                <div className="flex gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold uppercase">
-                    {(session?.user?.companyName || session?.user?.name || session?.user?.email || "U").charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1">
-                    <textarea 
-                      placeholder="What do you think about this product?" 
-                      className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-colors"
-                      rows="3"
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                    ></textarea>
-                    <div className="flex justify-end mt-2">
-                      <button onClick={handlePostComment} className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
-                        Post Comment
-                      </button>
+                {/* Comment Input / Sign-In Callout */}
+                {session ? (
+                  <div className="flex gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold uppercase">
+                      {(session.user?.companyName || session.user?.name || session.user?.email || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <textarea 
+                        placeholder="What do you think about this product?" 
+                        className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-colors"
+                        rows="3"
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                      ></textarea>
+                      <div className="flex justify-end mt-2">
+                        <button onClick={handlePostComment} className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
+                          Post Comment
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="bg-orange-50 dark:bg-gray-800/80 border border-orange-200 dark:border-gray-700 rounded-xl p-4 mb-6 text-center shadow-sm">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-3">
+                      💬 Want to leave a comment? Sign in or register to join the discussion!
+                    </p>
+                    <div className="flex justify-center gap-3">
+                      <Link 
+                        href="/login" 
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm"
+                      >
+                        Sign In
+                      </Link>
+                      <Link 
+                        href="/register" 
+                        className="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                      >
+                        Create Account
+                      </Link>
+                    </div>
+                  </div>
+                )}
 
                 {/* Real Database Comments List */}
                 <div className="space-y-4">

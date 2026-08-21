@@ -14,10 +14,6 @@ export default function CompanyDashboard() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newPromotion, setNewPromotion] = useState({ title: "", description: "", link: "" });
   const [submitting, setSubmitting] = useState(false);
-  const [selectedPromo, setSelectedPromo] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -74,23 +70,11 @@ export default function CompanyDashboard() {
   };
 
   const handleMakePayment = (promo) => {
-    setSelectedPromo(promo);
-    setShowPaymentModal(true);
+    router.push(`/company/checkout?promoId=${promo.id}`);
   };
 
-  const handlePaymentSubmit = () => {
-    if (!paymentMethod) {
-      alert("Please select a payment method");
-      return;
-    }
-    setPaymentSuccess(true);
-    setTimeout(() => {
-      setShowPaymentModal(false);
-      setPaymentSuccess(false);
-      setPaymentMethod("");
-      alert("✅ Payment successful! Your promotion is now LIVE on the platform.");
-      fetchPromotions();
-    }, 2000);
+  const handleCustomDonation = () => {
+    router.push(`/company/checkout?amount=500`); // Or dynamically from the amount input
   };
 
   const handleLogout = async () => {
@@ -98,12 +82,6 @@ export default function CompanyDashboard() {
     await signOut({ redirect: false });
     router.push("/company/login");
   };
-
-  const paymentMethods = [
-    { id: "telebirr", name: "TeleBirr", icon: "📱", color: "bg-green-500" },
-    { id: "cbe", name: "CBE Birr", icon: "🏦", color: "bg-blue-500" },
-    { id: "abyssinia", name: "Abyssinia Bank", icon: "💳", color: "bg-red-500" },
-  ];
 
   if (status === "loading" || loading) {
     return (
@@ -269,29 +247,20 @@ export default function CompanyDashboard() {
                 <h3 className="font-bold text-orange-900 dark:text-orange-300 mb-1 text-xl">Why Donate? 💖</h3>
                 <p className="text-base text-orange-800 dark:text-orange-200 leading-relaxed">Donating to the Sanitary Pad Fund earns you a <span className="font-bold text-amber-600 dark:text-amber-400">Gold Heart "Karma Badge"</span> on your product. This badge is proven to increase user trust and upvotes by 300%!</p>
               </div>
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                {paymentMethods.map((method) => (
-                  <div key={method.id} onClick={() => setPaymentMethod(method.id)} className={`border-2 rounded-2xl p-4 cursor-pointer text-center transition-all ${paymentMethod === method.id ? "border-amber-500 bg-amber-50 dark:bg-amber-900/30 shadow-md scale-105" : "border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-sm"}`}>
-                    <div className={`w-14 h-14 ${method.color} rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm`}>
-                      <span className="text-4xl">{method.icon}</span>
-                    </div>
-                    <h3 className="font-bold text-base text-gray-800 dark:text-gray-200">{method.name}</h3>
-                  </div>
-                ))}
-              </div>
-              
               <div className="mb-6">
                 <label className="block text-base font-bold text-gray-700 mb-2">Amount to Pay (Flexible)</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-4 font-bold text-gray-500">ETB</span>
-                  <input type="number" placeholder="Enter amount" className="w-full pl-14 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-amber-500 focus:ring-0 outline-none text-xl font-bold transition-colors" defaultValue={500} />
+                  <input type="number" placeholder="Enter amount" className="w-full pl-14 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-amber-500 focus:ring-0 outline-none text-xl font-bold transition-colors" defaultValue={500} id="customAmount" />
                 </div>
               </div>
 
-              <button onClick={handlePaymentSubmit} className="w-full bg-orange-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-orange-700 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
-                Confirm Custom Payment
+              <button onClick={() => {
+                const amt = document.getElementById("customAmount").value || 500;
+                router.push(`/company/checkout?amount=${amt}`);
+              }} className={`w-full text-white bg-orange-600 hover:bg-orange-700 py-4 rounded-xl font-bold text-xl shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl`}>
+                Configure Payment Plan
               </button>
-              <p className="text-sm text-gray-400 font-medium text-center mt-4 uppercase tracking-wider">Demo Mode: No actual payment will be processed</p>
 
               <div className="mt-8 p-5 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800 rounded-2xl transition-colors">
                 <h3 className="font-bold text-base mb-3 text-gray-800 dark:text-gray-200 uppercase tracking-wider">How Your Payment Helps</h3>
@@ -318,41 +287,6 @@ export default function CompanyDashboard() {
           </div>
         )}
       </div>
-
-      {/* Payment Modal */}
-      {showPaymentModal && selectedPromo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-            <div className="bg-orange-600 p-5 rounded-t-2xl">
-              <div className="flex justify-between items-center">
-                <h3 className="text-2xl font-bold text-white">Complete Payment</h3>
-                <button onClick={() => setShowPaymentModal(false)} className="text-white text-3xl">×</button>
-              </div>
-            </div>
-            <div className="p-6">
-              <p className="text-center text-gray-600 font-medium mb-2 text-lg">Select a payment method to Boost or Donate for:</p>
-              <p className="font-black text-center text-2xl text-orange-900 mb-6 tracking-tight">"{selectedPromo.title}"</p>
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {paymentMethods.map((method) => (
-                  <button key={method.id} onClick={() => setPaymentMethod(method.id)} className={`py-3 rounded-xl border-2 ${paymentMethod === method.id ? "border-orange-600 bg-orange-50" : "border-gray-200"}`}>
-                    <span className="text-3xl block">{method.icon}</span>
-                    <span className="text-sm">{method.name}</span>
-                  </button>
-                ))}
-              </div>
-              {paymentSuccess ? (
-                <div className="bg-amber-50 border border-amber-200 text-amber-700 p-4 rounded-xl text-center font-bold shadow-inner text-lg">
-                  ✅ Payment Successful! Your promotion is now Boosted.
-                </div>
-              ) : (
-                <button onClick={handlePaymentSubmit} className="w-full bg-orange-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-orange-700 shadow-lg transition-transform hover:scale-105">
-                  Confirm Payment
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

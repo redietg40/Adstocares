@@ -27,13 +27,13 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+      <nav className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              {/* Logo Image - Increased size */}
+              {/* Logo Image */}
               <Image
                 src="/logoswomen.jpg"
                 alt="Ad2Care Logo"
@@ -41,30 +41,30 @@ export default function HomePage() {
                 height={56}
                 className="rounded-xl"
                 priority
-                onError={(e) => {
+                onError={(e: any) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}
               />
-              {/* Fallback div if image doesn't load */}
+              {/* Fallback div */}
               <div className="w-14 h-14 bg-gradient-to-r from-orange-600 to-orange-600 rounded-xl items-center justify-center hidden">
                 <span className="text-white font-bold text-xl">A2C</span>
               </div>
               <div>
-                <span className="font-bold text-2xl bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-transparent">
+                <span className="font-bold text-2xl bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
                   Ad2Care
                 </span>
-                <p className="text-sm text-gray-500">Promote • Empower</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Promote • Empower</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/promotions" className="text-gray-700 hover:text-orange-600 transition">
+              <Link href="/promotions" className="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition font-medium">
                 Promotions
               </Link>
-              <Link href="/company/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
+              <Link href="/login" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-semibold">
                 Login
               </Link>
-              <Link href="/company/register" className="border border-orange-600 text-orange-600 px-4 py-2 rounded-lg hover:bg-orange-50 transition">
+              <Link href="/register" className="border border-orange-600 text-orange-600 dark:text-orange-400 dark:border-orange-400 px-4 py-2 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-800 transition font-semibold">
                 Register
               </Link>
             </div>
@@ -78,7 +78,7 @@ export default function HomePage() {
           className="absolute inset-0 bg-cover bg-center opacity-70 dark:opacity-50"
           style={{ backgroundImage: "url('/hero-bg.png')" }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/10 dark:from-black/70 dark:to-black/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30 dark:from-black/80 dark:to-black/50"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center">
             {/* Large Logo in Hero Section */}
@@ -90,7 +90,7 @@ export default function HomePage() {
                 height={120}
                 className="rounded-2xl shadow-lg"
                 priority
-                onError={(e) => {
+                onError={(e: any) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}
@@ -110,10 +110,10 @@ export default function HomePage() {
               Every promotion helps fund sanitary pads for students in need.
             </p>
             <div className="flex justify-center gap-4">
-              <Link href="/company/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition transform hover:scale-105">
+              <Link href="/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition transform hover:scale-105">
                 Get Started
               </Link>
-              <Link href="/promotions"  className="bg-white/10 backdrop-blur-md border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-orange-600 transition">
+              <Link href="/promotions" className="bg-white/10 backdrop-blur-md border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-orange-600 transition">
                 View Promotions
               </Link>
             </div>
@@ -122,59 +122,59 @@ export default function HomePage() {
       </section>
 
       {/* Platform Goals Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Platform Goals</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Our Platform Goals</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🎯</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Empower Women</h3>
-              <p className="text-gray-600">Support women's education by funding sanitary pads for students in need.</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Empower Women</h3>
+              <p className="text-gray-600 dark:text-gray-300">Support women's education by funding sanitary pads for students in need.</p>
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">📈</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Boost Businesses</h3>
-              <p className="text-gray-600">Help companies reach their target audience through effective promotions.</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Boost Businesses</h3>
+              <p className="text-gray-600 dark:text-gray-300">Help companies reach their target audience through effective promotions.</p>
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🌍</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Create Impact</h3>
-              <p className="text-gray-600">Build a sustainable ecosystem where businesses and communities grow together.</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Create Impact</h3>
+              <p className="text-gray-600 dark:text-gray-300">Build a sustainable ecosystem where businesses and communities grow together.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-gradient-to-r from-orange-50 to-orange-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">How It Works</h2>
           <div className="grid md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">1</div>
-              <h3 className="font-semibold mb-2">Company Registers</h3>
-              <p className="text-sm text-gray-600">Sign up and get verified</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Company Registers</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Sign up and get verified</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">2</div>
-              <h3 className="font-semibold mb-2">Create Promotion</h3>
-              <p className="text-sm text-gray-600">Submit your promotion</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Create Promotion</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Submit your promotion</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">3</div>
-              <h3 className="font-semibold mb-2">Admin Approves</h3>
-              <p className="text-sm text-gray-600">Content is reviewed</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Admin Approves</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Content is reviewed</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">4</div>
-              <h3 className="font-semibold mb-2">Make Payment</h3>
-              <p className="text-sm text-gray-600">Pay to go LIVE</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Make Payment</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Pay to go LIVE</p>
             </div>
           </div>
         </div>
@@ -182,18 +182,18 @@ export default function HomePage() {
 
       {/* Featured Promotions Preview */}
       {promotions.length > 0 && (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white dark:bg-gray-800 transition-colors">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Featured Promotions</h2>
+            <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Featured Promotions</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {promotions.map((promo) => (
-                <div key={promo.id} className="bg-gradient-to-br from-orange-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-xl transition">
-                  <h3 className="font-bold text-lg text-gray-800">{promo.title}</h3>
-                  <p className="text-gray-600 text-sm mt-2 line-clamp-2">{promo.description}</p>
-                  <p className="text-orange-600 text-xs mt-2">🏢 {promo.company?.companyName}</p>
+              {promotions.map((promo: any) => (
+                <div key={promo.id} className="bg-gray-50 dark:bg-gray-700/60 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-600 hover:shadow-md transition">
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{promo.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm mt-2 line-clamp-2">{promo.description}</p>
+                  <p className="text-orange-600 dark:text-orange-400 text-xs mt-2 font-medium">🏢 {promo.company?.companyName}</p>
                   <button
                     onClick={() => handleViewPromoDetails(promo)}
-                    className="mt-4 text-orange-600 font-semibold text-sm hover:text-orange-700"
+                    className="mt-4 text-orange-600 dark:text-orange-400 font-semibold text-sm hover:underline"
                   >
                     View Details →
                   </button>
@@ -201,7 +201,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="text-center mt-8">
-              <Link href="/promotions" className="text-orange-600 hover:text-orange-700 font-semibold">
+              <Link href="/promotions" className="text-orange-600 dark:text-orange-400 hover:underline font-semibold">
                 View All Promotions →
               </Link>
             </div>
@@ -210,13 +210,13 @@ export default function HomePage() {
       )}
 
       {/* Platform Policy Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Platform Policy</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Platform Policy</h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">📋 Content Guidelines</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">📋 Content Guidelines</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                 <li>✓ No illegal or harmful content</li>
                 <li>✓ No false or misleading information</li>
                 <li>✓ Respectful and professional language</li>
@@ -224,9 +224,9 @@ export default function HomePage() {
                 <li>✓ No prohibited items or services</li>
               </ul>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">💰 Payment & Fees</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">💰 Payment & Fees</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                 <li>✓ 100 ETB per promotion</li>
                 <li>✓ 60% platform fee (maintenance & development)</li>
                 <li>✓ 40% goes to sanitary pads fund</li>
@@ -234,9 +234,9 @@ export default function HomePage() {
                 <li>✓ 100% transparency in fund allocation</li>
               </ul>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">🛡️ Company Verification</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">🛡️ Company Verification</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                 <li>✓ Valid business license required</li>
                 <li>✓ Tax ID verification</li>
                 <li>✓ Manual admin review process</li>
@@ -244,9 +244,9 @@ export default function HomePage() {
                 <li>✓ Secure data handling</li>
               </ul>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">🎓 Social Impact</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">🎓 Social Impact</h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                 <li>✓ 40% of fees fund sanitary pads</li>
                 <li>✓ Partner with local schools</li>
                 <li>✓ Monthly donation reports</li>
@@ -258,84 +258,63 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Impact Section */}
-      <section className="py-16 bg-gradient-to-r from-orange-600 to-orange-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">Our Impact So Far</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">120+</div>
-              <p className="text-orange-100">Pads Donated</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">5+</div>
-              <p className="text-orange-100">Companies Joined</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">200+</div>
-              <p className="text-orange-100">Students Supported</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800 transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
-            <div className="border rounded-xl p-4 hover:bg-gray-50 transition">
-              <h3 className="font-semibold text-gray-800">How do I register my company?</h3>
-              <p className="text-gray-600 text-sm mt-1">Click "Register" on the homepage, fill out the form, upload your business license, and wait for admin approval.</p>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+              <h3 className="font-semibold text-gray-900 dark:text-white">How do I register my company?</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Click "Register" on the homepage, fill out the form, upload your business license, and wait for admin approval.</p>
             </div>
-            <div className="border rounded-xl p-4 hover:bg-gray-50 transition">
-              <h3 className="font-semibold text-gray-800">How much does it cost to promote?</h3>
-              <p className="text-gray-600 text-sm mt-1">100 ETB per promotion. 60% covers platform costs, 40% funds sanitary pads for students.</p>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+              <h3 className="font-semibold text-gray-900 dark:text-white">How much does it cost to promote?</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">100 ETB per promotion. 60% covers platform costs, 40% funds sanitary pads for students.</p>
             </div>
-            <div className="border rounded-xl p-4 hover:bg-gray-50 transition">
-              <h3 className="font-semibold text-gray-800">How long does verification take?</h3>
-              <p className="text-gray-600 text-sm mt-1">Admin typically reviews and approves companies within 24-48 hours.</p>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+              <h3 className="font-semibold text-gray-900 dark:text-white">How long does verification take?</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Admin typically reviews and approves companies within 24-48 hours.</p>
             </div>
-            <div className="border rounded-xl p-4 hover:bg-gray-50 transition">
-              <h3 className="font-semibold text-gray-800">What payment methods are accepted?</h3>
-              <p className="text-gray-600 text-sm mt-1">TeleBirr, CBE Birr, and Abyssinia Bank. More options coming soon.</p>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+              <h3 className="font-semibold text-gray-900 dark:text-white">What payment methods are accepted?</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">TeleBirr, CBE Birr, and Abyssinia Bank. More options coming soon.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-orange-50 to-orange-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Make an Impact?</h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Ready to Make an Impact?</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Join our platform today and start promoting your products while supporting women's education.
           </p>
           <div className="flex justify-center gap-4">
             <Link href="/company/register" className="bg-gradient-to-r from-orange-600 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition">
               Register Your Company
             </Link>
-            <Link href="/company/login" className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 transition">
-              Login
+            <Link href="/login" className="border-2 border-orange-600 text-orange-600 dark:text-orange-400 dark:border-orange-400 px-8 py-3 rounded-xl font-semibold hover:bg-orange-50 dark:hover:bg-gray-800 transition">
+              User Login
             </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-12 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                {/* Logo in footer - Larger size */}
                 <Image
                   src="/logo.png"
                   alt="Ad2Care Logo"
                   width={48}
                   height={48}
                   className="rounded-lg"
-                  onError={(e) => {
+                  onError={(e: any) => {
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'flex';
                   }}
@@ -352,7 +331,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-400 text-sm">
                 <li><Link href="/" className="hover:text-white transition">Home</Link></li>
                 <li><Link href="/promotions" className="hover:text-white transition">Promotions</Link></li>
-                <li><Link href="/company/register" className="hover:text-white transition">Register</Link></li>
+                <li><Link href="/register" className="hover:text-white transition">Register</Link></li>
               </ul>
             </div>
             <div>
@@ -374,40 +353,40 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
-            © 2024 Ad2Care. All rights reserved. | Empowering women through education
+            © 2026 Ad2Care. All rights reserved. | Empowering women through education
           </div>
         </div>
       </footer>
 
       {/* Policy Modal */}
       {showPolicy && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-100 dark:border-gray-700 shadow-2xl">
             <div className="bg-gradient-to-r from-orange-600 to-orange-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
               <h3 className="text-xl font-bold text-white">Terms of Service</h3>
               <button onClick={() => setShowPolicy(false)} className="text-white text-2xl">×</button>
             </div>
             <div className="p-6 space-y-4">
               <h4 className="font-semibold text-lg">1. Platform Usage</h4>
-              <p className="text-gray-600 text-sm">Ad2Care is a platform connecting businesses with customers through promotions while supporting women's education.</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Ad2Care is a platform connecting businesses with customers through promotions while supporting women's education.</p>
 
               <h4 className="font-semibold text-lg">2. Company Responsibilities</h4>
-              <p className="text-gray-600 text-sm">Companies must provide accurate information, comply with content guidelines, and ensure promotions are legal and appropriate.</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Companies must provide accurate information, comply with content guidelines, and ensure promotions are legal and appropriate.</p>
 
               <h4 className="font-semibold text-lg">3. Payment Terms</h4>
-              <p className="text-gray-600 text-sm">100 ETB fee per promotion. 60% platform fee, 40% donated to sanitary pads fund. No refunds after promotion goes live.</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">100 ETB fee per promotion. 60% platform fee, 40% donated to sanitary pads fund. No refunds after promotion goes live.</p>
 
               <h4 className="font-semibold text-lg">4. Content Moderation</h4>
-              <p className="text-gray-600 text-sm">All promotions are reviewed by admin before approval. We reserve the right to reject any inappropriate content.</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">All promotions are reviewed by admin before approval. We reserve the right to reject any inappropriate content.</p>
 
               <h4 className="font-semibold text-lg">5. Privacy</h4>
-              <p className="text-gray-600 text-sm">We protect your data and never share with third parties without consent.</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">We protect your data and never share with third parties without consent.</p>
 
-              <div className="bg-gray-50 p-4 rounded-lg mt-4">
-                <p className="text-sm text-gray-500">For questions, contact: legal@ad2care.com</p>
+              <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg mt-4 border border-gray-100 dark:border-gray-600">
+                <p className="text-sm text-gray-500 dark:text-gray-400">For questions, contact: legal@ad2care.com</p>
               </div>
             </div>
-            <div className="p-5 border-t flex justify-end">
+            <div className="p-5 border-t border-gray-100 dark:border-gray-700 flex justify-end">
               <button onClick={() => setShowPolicy(false)} className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700">Close</button>
             </div>
           </div>
@@ -416,19 +395,19 @@ export default function HomePage() {
 
       {/* Promotion Details Modal */}
       {showPromoModal && selectedPromo && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto border border-gray-100 dark:border-gray-700 shadow-2xl">
             <div className="bg-gradient-to-r from-orange-600 to-orange-600 p-5 rounded-t-2xl flex justify-between items-center sticky top-0">
-              <h3 className="text-xl font-bold text-white">{selectedPromo.title}</h3>
+              <h3 className="text-xl font-bold text-white">{(selectedPromo as any).title}</h3>
               <button onClick={() => setShowPromoModal(false)} className="text-white text-2xl">×</button>
             </div>
             <div className="p-6">
-              <p className="text-sm text-gray-500">Promoted by</p>
-              <p className="font-semibold mb-3">{selectedPromo.company?.companyName}</p>
-              <p className="text-sm text-gray-500">Description</p>
-              <p className="text-gray-700 mb-4">{selectedPromo.description || "No description available"}</p>
-              {selectedPromo.link && (
-                <a href={selectedPromo.link} target="_blank" rel="noopener noreferrer" className="block w-full bg-orange-600 text-white text-center py-2 rounded-lg hover:bg-orange-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Promoted by</p>
+              <p className="font-semibold mb-3">{(selectedPromo as any).company?.companyName}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Description</p>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">{(selectedPromo as any).description || "No description available"}</p>
+              {(selectedPromo as any).link && (
+                <a href={(selectedPromo as any).link} target="_blank" rel="noopener noreferrer" className="block w-full bg-orange-600 text-white text-center py-2 rounded-lg hover:bg-orange-700">
                   Visit Promotion →
                 </a>
               )}
