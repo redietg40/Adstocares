@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
@@ -78,8 +78,8 @@ export async function POST(req: NextRequest) {
       message: "Registration successful! Pending admin approval."
     }, { status: 201 });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error?.message || "Registration failed" }, { status: 500 });
   }
 }
