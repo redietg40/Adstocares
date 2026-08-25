@@ -73,11 +73,13 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        setTimeout(() => {
+        const data = await res.json();
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else {
+          alert("Error: Missing checkout URL from server.");
           setIsProcessing(false);
-          alert("✅ Payment successful! Redirecting to dashboard...");
-          router.push("/company/dashboard");
-        }, 1500);
+        }
       } else {
         const data = await res.json();
         alert(`Payment failed: ${data.error}`);

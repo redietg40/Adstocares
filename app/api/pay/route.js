@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { Chapa } from "chapa-nodejs";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 const chapa = new Chapa({
@@ -10,9 +11,8 @@ const chapa = new Chapa({
 
 export async function POST(request) {
   try {
-    const session = await getServerSession();
-    
-    if (!session?.user?.email) {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -24,66 +24,73 @@ export async function POST(request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const body = await request.json();
-    const { amount, promotionId, customDonation } = body;
+    const { promotionId, amount, paymentMethod, paymentAccount } = await request.json();
 
-    let transactionAmount = Number(amount) || 500;
+    const transactionAmount = parseFloat(amount);
+    if (isNaN(transactionAmount) || transactionAmount <= 0) {
+      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
+    }
 
-    // Validate if paying for a specific promotion
+    // Verify promotion belongs to user if provided
     if (promotionId) {
-      const promotion = await prisma.promotion.findUnique({
+      const promo = await prisma.promotion.findUnique({
         where: { id: promotionId },
       });
-
-      if (!promotion || promotion.companyId !== user.id) {
-        return NextResponse.json({ error: "Promotion not found or unauthorized" }, { status: 404 });
+      if (!promo || promo.companyId !== user.id) {
+        return NextResponse.json({ error: "Invalid promotion" }, { status: 400 });
       }
     }
 
-    const tx_ref = `TXN-SIM-${Date.now()}`;
+    let tx_ref = await chapa.genTxRef();
+    if (promotionId) {
+      tx_ref = `PROMO-${promotionId}-${tx_ref}`;
+    } else {
+      tx_ref = `DONATION-${tx_ref}`;
+    }
     
-    // Simulate payment directly
+    // Create pending payment
     const payment = await prisma.payment.create({
       data: {
         companyId: user.id,
         amount: transactionAmount,
-        status: "completed",
+        status: "pending",
         transactionId: tx_ref,
       },
     });
 
-    if (promotionId) {
-      await prisma.promotion.update({
-        where: { id: promotionId },
-        data: {
-          status: "live",
-          isSponsored: true,
-          karmaAmount: {
-            increment: transactionAmount,
-          },
-        },
+    const host = request.headers.get("host");
+    const protocol = host.includes("localhost") ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
+
+    const initializeData = {
+      first_name: user.companyName || "Ad2Care",
+      last_name: "Company",
+      email: user.email,
+      currency: "ETB",
+      amount: transactionAmount.toString(),
+      tx_ref: tx_ref,
+      callback_url: `${baseUrl}/api/webhook/chapa`,
+      return_url: `${baseUrl}/company/dashboard?payment=success`,
+      customization: {
+        title: "Ad2Care Promotion Boost",
+        description: promotionId ? "Payment to boost promotion" : "Sanitary Pad Fund Donation",
+      },
+    };
+
+    const response = await chapa.initialize(initializeData);
+
+    if (response && response.data && response.data.checkout_url) {
+      return NextResponse.json({ 
+        success: true, 
+        checkout_url: response.data.checkout_url 
       });
+    } else {
+      console.error("Chapa Initialization Error:", response);
+      return NextResponse.json({ error: "Failed to initialize payment with Chapa" }, { status: 500 });
     }
-
-    // Update Donations global fund
-    await prisma.donation.upsert({
-      where: { id: 1 },
-      update: {
-        totalMoney: {
-          increment: transactionAmount,
-        },
-      },
-      create: {
-        id: 1,
-        totalMoney: transactionAmount,
-        padsDistributed: 0,
-      },
-    });
-
-    return NextResponse.json({ success: true, payment });
 
   } catch (error) {
     console.error("Error creating payment:", error);
-    return NextResponse.json({ error: "Failed to create payment" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
