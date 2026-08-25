@@ -7,15 +7,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET() {
-  console.log("GET request received at /api/company/register");
   return NextResponse.json({ 
     message: "Company registration API is working. Use POST to register." 
   });
 }
 
 export async function POST(req: NextRequest) {
-  console.log("=== POST request received ===");
-  
   try {
     const formData = await req.formData();
     
@@ -26,8 +23,6 @@ export async function POST(req: NextRequest) {
     const licenseFile = formData.get("licenseFile") as File;
     const taxFile = formData.get("taxFile") as File;
 
-    console.log("Received:", { companyName, email, licenseNumber });
-
     if (!companyName || !licenseNumber || !email || !password || !licenseFile) {
       return NextResponse.json({ error: "All fields required" }, { status: 400 });
     }
@@ -37,18 +32,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email already registered" }, { status: 400 });
     }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
-    const licenseExt = licenseFile.name.split('.').pop();
+    const licenseExt = licenseFile.name ? licenseFile.name.split('.').pop() : "pdf";
     const licenseFilename = `license_${Date.now()}.${licenseExt}`;
-    await writeFile(path.join(uploadDir, licenseFilename), Buffer.from(await licenseFile.arrayBuffer()));
 
     let taxFilename = null;
-    if (taxFile) {
+    if (taxFile && taxFile.name) {
       const taxExt = taxFile.name.split('.').pop();
       taxFilename = `tax_${Date.now()}.${taxExt}`;
-      await writeFile(path.join(uploadDir, taxFilename), Buffer.from(await taxFile.arrayBuffer()));
+    }
+
+    let licenseFileUrl = `/uploads/${licenseFilename}`;
+    let taxFileUrl = taxFilename ? `/uploads/${taxFilename}` : "";
+
+    // Save file locally or fallback to Base64 data URL for Vercel serverless read-only environment
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await mkdir(uploadDir, { recursive: true });
+      await writeFile(path.join(uploadDir, licenseFilename), Buffer.from(await licenseFile.arrayBuffer()));
+      if (taxFile && taxFilename) {
+        await writeFile(path.join(uploadDir, taxFilename), Buffer.from(await taxFile.arrayBuffer()));
+      }
+    } catch (fsError) {
+      console.warn("Serverless filesystem is read-only, converting to Base64 storage:", fsError);
+      const licenseBuffer = Buffer.from(await licenseFile.arrayBuffer());
+      licenseFileUrl = `data:${licenseFile.type || "application/pdf"};base64,${licenseBuffer.toString("base64")}`;
+      if (taxFile) {
+        const taxBuffer = Buffer.from(await taxFile.arrayBuffer());
+        taxFileUrl = `data:${taxFile.type || "application/pdf"};base64,${taxBuffer.toString("base64")}`;
+      }
     }
 
     const hashedPassword = await hash(password, 10);
@@ -63,15 +74,13 @@ export async function POST(req: NextRequest) {
         companyLicenseNumber: licenseNumber,
         verifications: {
           create: {
-            businessLicenseFileUrl: `/uploads/${licenseFilename}`,
-            taxIdFileUrl: taxFilename ? `/uploads/${taxFilename}` : "",
+            businessLicenseFileUrl: licenseFileUrl,
+            taxIdFileUrl: taxFileUrl,
             status: "pending",
           }
         }
       }
     });
-
-    console.log("User created:", user.id);
 
     return NextResponse.json({ 
       success: true, 
@@ -79,7 +88,7 @@ export async function POST(req: NextRequest) {
     }, { status: 201 });
 
   } catch (error: any) {
-    console.error("Error:", error);
+    console.error("Registration Error:", error);
     return NextResponse.json({ error: error?.message || "Registration failed" }, { status: 500 });
   }
 }
