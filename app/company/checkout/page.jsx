@@ -2,9 +2,9 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -25,13 +25,12 @@ export default function CheckoutPage() {
       router.push("/company/login");
     }
     
-    // Fetch promotion details if promoId is provided
     if (promoId && session) {
       fetchPromoDetails(promoId);
     } else if (session) {
       setLoading(false);
     }
-  }, [status, session, promoId]);
+  }, [status, session, promoId, router]);
 
   const fetchPromoDetails = async (id) => {
     try {
@@ -200,7 +199,6 @@ export default function CheckoutPage() {
                 <label htmlFor="save-card" className="text-sm text-gray-400">Save payment details to Ad2Care for future purchases</label>
               </div>
 
-              {/* Hidden submit button to allow Enter key to submit */}
               <button type="submit" className="hidden">Submit</button>
             </form>
           </div>
@@ -219,7 +217,7 @@ export default function CheckoutPage() {
               </li>
               <li className="flex gap-3 items-start">
                 <span className="text-white">🚀</span> 
-                Boost "{promoTitle}" to the top of the feed
+                Boost &quot;{promoTitle}&quot; to the top of the feed
               </li>
               <li className="flex gap-3 items-start">
                 <span className="text-white">💖</span> 
@@ -234,11 +232,11 @@ export default function CheckoutPage() {
             <div className="border-t border-gray-800 pt-6 space-y-3 text-sm">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
-                <span>ETB {(amount * 0.85).toFixed(2)}</span>
+                <span>ETB {(Number(amount) * 0.85).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-400">
                 <span>VAT (15%)</span>
-                <span>ETB {(amount * 0.15).toFixed(2)}</span>
+                <span>ETB {(Number(amount) * 0.15).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-white pt-2">
                 <span>Due today</span>
@@ -258,5 +256,13 @@ export default function CheckoutPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
