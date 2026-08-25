@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { Chapa } from "chapa-nodejs";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "../../lib/auth";
 
 const prisma = new PrismaClient();
 const chapa = new Chapa({
