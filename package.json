@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma db push && prisma generate && next build",
+    "build": "prisma db push && prisma generate && npx prisma db seed && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "npx -y tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
