@@ -34,6 +34,19 @@ function getRelativeTime(dateInput) {
   return `${diffInYears}y ago`;
 }
 
+function RelativeTime({ dateInput }) {
+  const [timeStr, setTimeStr] = useState(getRelativeTime(dateInput));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeStr(getRelativeTime(dateInput));
+    }, 10000); // update every 10 seconds
+    return () => clearInterval(timer);
+  }, [dateInput]);
+
+  return <>{timeStr}</>;
+}
+
 export default function PromotionsPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -111,6 +124,7 @@ export default function PromotionsPage() {
         const formattedComment = {
           id: data.comment.id,
           user: data.comment.user?.companyName || data.comment.user?.email?.split("@")[0] || "User",
+          createdAt: data.comment.createdAt,
           time: getRelativeTime(data.comment.createdAt),
           text: data.comment.content,
           avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
@@ -142,6 +156,7 @@ export default function PromotionsPage() {
           const formatted = data.map((c) => ({
             id: c.id,
             user: c.user?.companyName || c.user?.email?.split("@")[0] || "User",
+            createdAt: c.createdAt,
             time: getRelativeTime(c.createdAt),
             text: c.content,
             avatarColor: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
@@ -526,7 +541,9 @@ export default function PromotionsPage() {
                         <div>
                           <div className="flex items-baseline gap-2">
                             <span className="font-semibold text-gray-900 dark:text-white text-sm">{comment.user}</span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{comment.time}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {comment.createdAt ? <RelativeTime dateInput={comment.createdAt} /> : comment.time}
+                            </span>
                           </div>
                           <p className="text-gray-700 dark:text-gray-300 text-sm mt-1 break-words">{comment.text}</p>
                         </div>
