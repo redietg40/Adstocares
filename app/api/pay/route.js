@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { PrismaClient } from "@prisma/client";
+
 import { Chapa } from "chapa-nodejs";
 import { authOptions } from "../../lib/auth";
 
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 const chapa = new Chapa({
   secretKey: process.env.CHAPA_SECRET_KEY || "CHAPA-SECRET-KEY-MISSING",
 });

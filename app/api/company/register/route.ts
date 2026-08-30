@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   return NextResponse.json({ 
@@ -44,20 +42,30 @@ export async function POST(req: NextRequest) {
     let licenseFileUrl = `/uploads/${licenseFilename}`;
     let taxFileUrl = taxFilename ? `/uploads/${taxFilename}` : "";
 
+    // Read buffers once so we don't consume the stream twice
+    const licenseBuffer = Buffer.from(await licenseFile.arrayBuffer());
+    let taxBuffer: Buffer | null = null;
+    if (taxFile) {
+      taxBuffer = Buffer.from(await taxFile.arrayBuffer());
+    }
+
     // Save file locally or fallback to Base64 data URL for Vercel serverless read-only environment
     try {
+      // Check if we are obviously on Vercel to skip fs operations entirely
+      if (process.env.VERCEL) {
+        throw new Error("Running on Vercel, skipping local file system write");
+      }
+
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       await mkdir(uploadDir, { recursive: true });
-      await writeFile(path.join(uploadDir, licenseFilename), Buffer.from(await licenseFile.arrayBuffer()));
-      if (taxFile && taxFilename) {
-        await writeFile(path.join(uploadDir, taxFilename), Buffer.from(await taxFile.arrayBuffer()));
+      await writeFile(path.join(uploadDir, licenseFilename), licenseBuffer);
+      if (taxFile && taxFilename && taxBuffer) {
+        await writeFile(path.join(uploadDir, taxFilename), taxBuffer);
       }
     } catch (fsError) {
-      console.warn("Serverless filesystem is read-only, converting to Base64 storage:", fsError);
-      const licenseBuffer = Buffer.from(await licenseFile.arrayBuffer());
+      console.warn("Serverless filesystem is read-only or Vercel environment detected, converting to Base64 storage.");
       licenseFileUrl = `data:${licenseFile.type || "application/pdf"};base64,${licenseBuffer.toString("base64")}`;
-      if (taxFile) {
-        const taxBuffer = Buffer.from(await taxFile.arrayBuffer());
+      if (taxFile && taxBuffer) {
         taxFileUrl = `data:${taxFile.type || "application/pdf"};base64,${taxBuffer.toString("base64")}`;
       }
     }
