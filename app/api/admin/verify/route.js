@@ -10,7 +10,15 @@ export async function POST(request) {
     if (action === "approve") {
       const updatedCompany = await prisma.user.update({
         where: { id: companyId },
-        data: { isVerified: true },
+        data: { 
+          isVerified: true,
+          verifications: {
+            updateMany: {
+              where: { status: "pending" },
+              data: { status: "approved" }
+            }
+          }
+        },
       });
       
       return NextResponse.json({ 
@@ -20,6 +28,19 @@ export async function POST(request) {
     }
     
     if (action === "reject") {
+      const updatedCompany = await prisma.user.update({
+        where: { id: companyId },
+        data: { 
+          isVerified: false,
+          verifications: {
+            updateMany: {
+              where: { status: "pending" },
+              data: { status: "rejected" }
+            }
+          }
+        },
+      });
+      
       return NextResponse.json({ 
         success: true, 
         message: "Company rejected" 
