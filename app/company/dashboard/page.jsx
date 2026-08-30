@@ -109,20 +109,15 @@ export default function CompanyDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-      <header className="bg-orange-500 dark:bg-orange-600 text-white shadow-xl sticky top-0 z-20 transition-colors">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Ad2Care Dashboard</h1>
-            <p className="text-orange-100 text-base">Manage your promotions</p>
-          </div>
-          <button onClick={handleLogout} className="bg-white/20 dark:bg-black/20 px-5 py-2 rounded-xl hover:bg-white/30 dark:hover:bg-black/30 text-lg transition-colors">Logout</button>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="bg-orange-500 dark:bg-orange-600 rounded-2xl p-6 mb-8 text-white shadow-lg transition-colors">
-          <h2 className="text-3xl font-bold mb-2">Welcome, {companyData?.companyName || "Company"}!</h2>
-          <p className="opacity-90 font-medium text-lg">Create promotions → Admin approves → Promotion goes LIVE for FREE → Optionally Boost to the top!</p>
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Welcome, {companyData?.companyName || "Company"}!</h2>
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">Create promotions → Admin approves → Promotion goes LIVE for FREE → Optionally Boost to the top!</p>
+          </div>
+          <button onClick={handleLogout} className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 px-5 py-2 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-700 text-sm font-semibold transition-colors">
+            Logout
+          </button>
         </div>
 
         {/* Stats Cards */}
