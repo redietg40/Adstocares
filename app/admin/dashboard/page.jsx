@@ -387,7 +387,7 @@ export default function AdminDashboard() {
                 >
                   Close
                 </button>
-                {!selectedCompany.isVerified && (
+                {(!selectedCompany.isVerified || (selectedCompany.verifications && selectedCompany.verifications[0]?.status === "pending")) && (
                   <button
                     onClick={() => {
                       handleVerify(selectedCompany.id, "approve");

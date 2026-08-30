@@ -22,7 +22,7 @@ export async function GET() {
         isVerified: true,
         companyName: true,
         companyLicenseNumber: true,
-        createdAt: true,
+        registrationDate: true,
       }
     });
 
