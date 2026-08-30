@@ -7,13 +7,18 @@ import { ArrowUp, MessageCircle, ExternalLink, Smile } from "lucide-react";
 import { useSession } from "next-auth/react";
 import EmojiPicker from "emoji-picker-react";
 
-function getRelativeTime(dateInput) {
+function getRelativeTime(dateInput, elapsedSeconds = 0) {
   if (!dateInput) return "Just now";
   const date = new Date(dateInput);
   if (isNaN(date.getTime())) return "Just now";
 
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  let diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  // Fix server/client clock skew (if server is in the future, assume 0)
+  if (diffInSeconds < 0) diffInSeconds = 0;
+  
+  diffInSeconds += elapsedSeconds; // add local tick time
 
   if (diffInSeconds < 10) return "Just now";
   if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
@@ -35,16 +40,16 @@ function getRelativeTime(dateInput) {
 }
 
 function RelativeTime({ dateInput }) {
-  const [timeStr, setTimeStr] = useState(getRelativeTime(dateInput));
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeStr(getRelativeTime(dateInput));
-    }, 10000); // update every 10 seconds
+      setElapsed((prev) => prev + 10);
+    }, 10000); // tick 10 seconds
     return () => clearInterval(timer);
-  }, [dateInput]);
+  }, []);
 
-  return <>{timeStr}</>;
+  return <>{getRelativeTime(dateInput, elapsed)}</>;
 }
 
 export default function PromotionsPage() {
