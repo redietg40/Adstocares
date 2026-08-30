@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowUp, MessageCircle, ExternalLink } from "lucide-react";
+import { ArrowUp, MessageCircle, ExternalLink, Smile } from "lucide-react";
 import { useSession } from "next-auth/react";
+import EmojiPicker from "emoji-picker-react";
 
 function getRelativeTime(dateInput) {
   if (!dateInput) return "Just now";
@@ -47,6 +48,7 @@ export default function PromotionsPage() {
   const [localComments, setLocalComments] = useState({});
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalConfig, setAuthModalConfig] = useState({ title: "", action: "" });
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const [toastMessage, setToastMessage] = useState("");
 
@@ -462,7 +464,27 @@ export default function PromotionsPage() {
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                       ></textarea>
-                      <div className="flex justify-end mt-2">
+                      <div className="flex justify-between items-center mt-2 relative">
+                        <div>
+                          <button 
+                            type="button"
+                            onClick={() => setShowEmojiPicker((prev) => !prev)} 
+                            className="text-gray-500 hover:text-orange-500 transition-colors flex items-center gap-1"
+                          >
+                            <Smile size={20} />
+                            <span className="text-sm font-medium">Emoji</span>
+                          </button>
+                          
+                          {showEmojiPicker && (
+                            <div className="absolute bottom-full left-0 mb-2 z-[60] shadow-2xl rounded-xl">
+                              <EmojiPicker onEmojiClick={(emojiData) => {
+                                setCommentText((prev) => prev + emojiData.emoji);
+                                setShowEmojiPicker(false);
+                              }} />
+                            </div>
+                          )}
+                        </div>
+
                         <button onClick={handlePostComment} className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
                           Post Comment
                         </button>
