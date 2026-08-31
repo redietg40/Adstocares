@@ -27,6 +27,13 @@ export async function POST(request: Request) {
 
     const passwordHash = await hash(password, 10);
 
+    const { generateOTP, sendVerificationEmail } = await import("@/app/lib/email");
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    const origin = request.headers.get("origin") || "http://localhost:3000";
+    const verificationUrl = `${origin}/verify-email?email=${encodeURIComponent(email)}&token=${otp}`;
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -34,11 +41,23 @@ export async function POST(request: Request) {
         companyName: name || email.split("@")[0],
         role: "USER",
         isVerified: true,
+        isEmailVerified: false,
+        emailVerificationToken: otp,
+        emailVerificationExpires: expiresAt,
       },
+    });
+
+    await sendVerificationEmail({
+      toEmail: email,
+      otp,
+      verificationUrl,
     });
 
     return NextResponse.json({
       success: true,
+      requiresVerification: true,
+      email: user.email,
+      message: "Account created! Please check your email for your verification code.",
       user: {
         id: user.id,
         email: user.email,

@@ -12,8 +12,11 @@ model User {
   email                String   @unique
   passwordHash         String
   role                 String
-  isVerified           Boolean  @default(false)
-  companyName          String?
+  isVerified               Boolean   @default(false)
+  isEmailVerified          Boolean   @default(false)
+  emailVerificationToken   String?
+  emailVerificationExpires DateTime?
+  companyName              String?
   companyLicenseNumber String?
   registrationDate     DateTime @default(now())
   trustScore           Int      @default(0) // Trusted Company logic

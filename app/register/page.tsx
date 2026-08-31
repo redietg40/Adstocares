@@ -36,7 +36,11 @@ export default function UserRegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/login?registered=true");
+        if (data.requiresVerification) {
+          router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        } else {
+          router.push("/login?registered=true");
+        }
       } else {
         setError(data.error || "Registration failed");
       }

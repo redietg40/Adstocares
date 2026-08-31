@@ -110,37 +110,13 @@ export default function CompanyDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-          <div className="relative">
-            {/* Decorative ambient glow behind the text */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-orange-400 via-pink-400 to-purple-500 rounded-full blur-3xl opacity-10 dark:opacity-20 animate-pulse pointer-events-none"></div>
-            
-            <div className="relative">
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight text-gray-900 dark:text-white">
-                Welcome,{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 dark:from-orange-400 dark:via-pink-400 dark:to-purple-400 drop-shadow-sm">
-                  {companyData?.companyName || "Company"}
-                </span>
-                <span className="inline-block ml-3 animate-bounce origin-bottom">👋</span>
-              </h2>
-              
-              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                <span className="bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400 px-2.5 py-1 rounded-md shadow-sm border border-orange-200 dark:border-orange-800/50">1. Create</span>
-                <span className="text-gray-400">→</span>
-                <span className="bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400 px-2.5 py-1 rounded-md shadow-sm border border-yellow-200 dark:border-yellow-800/50">2. Approve</span>
-                <span className="text-gray-400">→</span>
-                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-md shadow-sm border border-green-200 dark:border-green-800/50">3. LIVE</span>
-                <span className="text-gray-400">→</span>
-                <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 px-2.5 py-1 rounded-md shadow-sm border border-blue-200 dark:border-blue-800/50">4. Boost 🚀</span>
-              </div>
-            </div>
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Welcome, {companyData?.companyName || "Company"}!</h2>
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">Create promotions → Admin approves → Promotion goes LIVE for FREE → Optionally Boost to the top!</p>
           </div>
-          
-          <button onClick={handleLogout} className="group relative px-6 py-2.5 font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-all overflow-hidden flex-shrink-0">
-            <span className="relative flex items-center gap-2">
-              Logout
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            </span>
+          <button onClick={handleLogout} className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 px-5 py-2 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-700 text-sm font-semibold transition-colors">
+            Logout
           </button>
         </div>
 

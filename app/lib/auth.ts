@@ -32,6 +32,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Require email verification for all non-ADMIN accounts
+        if (user.role !== "ADMIN" && user.isEmailVerified === false) {
+          throw new Error("UNVERIFIED_EMAIL");
+        }
+
         return {
           id: user.id,
           email: user.email,

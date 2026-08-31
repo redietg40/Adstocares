@@ -72,12 +72,22 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await hash(password, 10);
 
+    const { generateOTP, sendVerificationEmail } = await import("@/app/lib/email");
+    const otp = generateOTP();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    const origin = req.headers.get("origin") || "http://localhost:3000";
+    const verificationUrl = `${origin}/verify-email?email=${encodeURIComponent(email)}&token=${otp}`;
+
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash: hashedPassword,
         role: "company",
         isVerified: false,
+        isEmailVerified: false,
+        emailVerificationToken: otp,
+        emailVerificationExpires: expiresAt,
         companyName,
         companyLicenseNumber: licenseNumber,
         verifications: {
@@ -90,9 +100,17 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    await sendVerificationEmail({
+      toEmail: email,
+      otp,
+      verificationUrl,
+    });
+
     return NextResponse.json({ 
       success: true, 
-      message: "Registration successful! Pending admin approval."
+      requiresVerification: true,
+      email: user.email,
+      message: "Company registration successful! Please verify your email."
     }, { status: 201 });
 
   } catch (error: any) {

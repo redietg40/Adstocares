@@ -53,7 +53,11 @@ export default function CompanyRegisterPage() {
             const data = await res.json();
 
             if (res.ok) {
-                router.push("/company/login?registered=true");
+                if (data.requiresVerification) {
+                    router.push(`/verify-email?email=${encodeURIComponent(formData.email)}`);
+                } else {
+                    router.push("/company/login?registered=true");
+                }
             } else {
                 setError(data.error || "Registration failed");
             }

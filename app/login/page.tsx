@@ -29,12 +29,16 @@ function UserLoginForm() {
       });
 
       if (res?.error) {
-        setError("Invalid email or password");
+        if (res.error.includes("UNVERIFIED_EMAIL")) {
+          setError("UNVERIFIED_EMAIL");
+        } else {
+          setError("Invalid email or password");
+        }
       } else {
         router.push("/promotions");
         router.refresh();
       }
-    } catch (err) {
+    } catch (err: any) {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -58,11 +62,22 @@ function UserLoginForm() {
           </div>
         )}
 
-        {error && (
+        {error === "UNVERIFIED_EMAIL" ? (
+          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-400 text-amber-800 dark:text-amber-300 px-4 py-4 rounded-xl mb-6 text-sm text-center space-y-2">
+            <p className="font-semibold">✉️ Email Verification Required</p>
+            <p className="text-xs">Your email address has not been verified yet.</p>
+            <Link
+              href={`/verify-email?email=${encodeURIComponent(email)}`}
+              className="inline-block bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition"
+            >
+              Verify Email Now
+            </Link>
+          </div>
+        ) : error ? (
           <div className="bg-red-50 dark:bg-red-900/30 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl mb-6 text-sm text-center">
             {error}
           </div>
-        )}
+        ) : null}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
