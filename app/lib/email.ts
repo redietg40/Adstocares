@@ -20,6 +20,9 @@ const getTransporter = () => {
           user: user.trim(),
           pass: pass.trim(),
         },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
       });
     }
     return nodemailer.createTransport({
