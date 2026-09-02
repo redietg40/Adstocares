@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 
+// Email utility with Gmail SSL SMTP support on port 465
 export function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
