@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "bcryptjs";
+import { generateOTP, sendVerificationEmail } from "@/app/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -27,7 +28,6 @@ export async function POST(request: Request) {
 
     const passwordHash = await hash(password, 10);
 
-    const { generateOTP, sendVerificationEmail } = await import("@/app/lib/email");
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
