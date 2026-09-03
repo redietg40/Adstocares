@@ -18,16 +18,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No account found with this email." }, { status: 404 });
     }
 
-    if (user.isEmailVerified) {
-      return NextResponse.json({
-        success: true,
-        alreadyVerified: true,
-        message: "This email is already verified. You can log in directly.",
-      });
-    }
-
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 60 mins
 
     const origin = request.headers.get("origin") || request.nextUrl.origin;
     const verificationUrl = `${origin}/verify-email?email=${encodeURIComponent(email)}&token=${otp}`;
@@ -35,6 +27,7 @@ export async function POST(request: NextRequest) {
     await prisma.user.update({
       where: { id: user.id },
       data: {
+        isEmailVerified: false,
         emailVerificationToken: otp,
         emailVerificationExpires: expiresAt,
       },
