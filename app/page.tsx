@@ -84,7 +84,7 @@ export default function HomePage() {
             {/* Large Logo in Hero Section */}
             <div className="flex justify-center mb-6">
               <Image
-                src="/logo.png"
+                src="/logoswomen.jpg"
                 alt="Ad2Care Logo"
                 width={120}
                 height={120}
@@ -309,7 +309,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Image
-                  src="/logo.png"
+                  src="/logoswomen.jpg"
                   alt="Ad2Care Logo"
                   width={48}
                   height={48}
