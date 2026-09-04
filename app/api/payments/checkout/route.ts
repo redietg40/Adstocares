@@ -20,8 +20,10 @@ export async function POST(req: Request) {
     // Convert amount to string for Chapa (usually expects strings, e.g. "100")
     const amountStr = amount.toString();
     
-    // Generate a unique transaction reference
-    const tx_ref = `tx-${session.user.id}-${Date.now()}`;
+    // Generate a unique transaction reference (Chapa max: 50 chars)
+    // We'll use a short slice of the user ID (8 chars) + timestamp to ensure it stays well under 50
+    const shortUserId = session.user.id.substring(0, 8);
+    const tx_ref = `tx-${shortUserId}-${Date.now()}`;
 
     // Record the pending payment in the database
     // We store the promotionId temporarily in transactionId to link them together, 
@@ -55,8 +57,8 @@ export async function POST(req: Request) {
       callback_url: `${baseUrl}/api/payments/verify?tx_ref=${tx_ref}`,
       return_url: `${baseUrl}/api/payments/verify?tx_ref=${tx_ref}`,
       customization: {
-        title: "Ad2Care Promotion Payment",
-        description: `Payment for promotion ${promotionId}`
+        title: "Ad2Care Promo", // max 16 chars
+        description: `Boost: ${promotionId.substring(0, 8)}` // max 50 chars
       }
     };
 
