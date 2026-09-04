@@ -24,12 +24,15 @@ function LoginContent() {
       const result = await signIn("credentials", {
         email,
         password,
+        loginType: "company",
         redirect: false,
       });
 
       if (result?.error) {
         if (result.error.includes("UNVERIFIED_EMAIL")) {
           setError("UNVERIFIED_EMAIL");
+        } else if (result.error.includes("NOT_A_COMPANY")) {
+          setError("This account is not a Company account. Please use the normal User login, or register as a Company.");
         } else {
           setError("Invalid email or password");
         }

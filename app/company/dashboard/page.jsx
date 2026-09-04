@@ -130,12 +130,12 @@ export default function CompanyDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Welcome, {companyData?.companyName || "Company"}!</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">Create promotions → Admin approves → Promotion goes LIVE for FREE → Optionally Boost to the top!</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">Welcome, {companyData?.companyName || "Company"}!</h2>
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-sm md:text-lg">Create promotions → Admin approves → Promotion goes LIVE for FREE → Optionally Boost to the top!</p>
           </div>
-          <button onClick={handleLogout} className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 px-5 py-2 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-700 text-sm font-semibold transition-colors">
+          <button onClick={handleLogout} className="w-full md:w-auto bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 px-5 py-2 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-700 text-sm font-semibold transition-colors">
             Logout
           </button>
         </div>
@@ -161,14 +161,14 @@ export default function CompanyDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
-          <button onClick={() => { setActiveTab("promotions"); setShowAddForm(false); }} className={`px-6 py-3 font-semibold text-lg transition-colors ${activeTab === "promotions" ? "text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>
+        <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700 overflow-x-auto whitespace-nowrap scrollbar-hide pb-1">
+          <button onClick={() => { setActiveTab("promotions"); setShowAddForm(false); }} className={`px-4 md:px-6 py-3 font-semibold text-sm md:text-lg transition-colors ${activeTab === "promotions" ? "text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>
             My Promotions
           </button>
-          <button onClick={() => { setActiveTab("payment"); setShowAddForm(false); }} className={`px-6 py-3 font-semibold text-lg transition-colors ${activeTab === "payment" ? "text-amber-600 dark:text-amber-500 border-b-2 border-amber-600 dark:border-amber-500" : "text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400"}`}>
+          <button onClick={() => { setActiveTab("payment"); setShowAddForm(false); }} className={`px-4 md:px-6 py-3 font-semibold text-sm md:text-lg transition-colors ${activeTab === "payment" ? "text-amber-600 dark:text-amber-500 border-b-2 border-amber-600 dark:border-amber-500" : "text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400"}`}>
             Boosts & Donations
           </button>
-          <button onClick={() => { setActiveTab("profile"); setShowAddForm(false); }} className={`px-6 py-3 font-semibold text-lg transition-colors ${activeTab === "profile" ? "text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>
+          <button onClick={() => { setActiveTab("profile"); setShowAddForm(false); }} className={`px-4 md:px-6 py-3 font-semibold text-sm md:text-lg transition-colors ${activeTab === "profile" ? "text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"}`}>
             Company Profile
           </button>
         </div>
@@ -177,7 +177,7 @@ export default function CompanyDashboard() {
         {activeTab === "promotions" && (
           <>
             <div className="mb-6">
-              <button onClick={() => setShowAddForm(!showAddForm)} className="bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-lg hover:bg-orange-700">
+              <button onClick={() => setShowAddForm(!showAddForm)} className="w-full md:w-auto bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold text-lg hover:bg-orange-700">
                 {showAddForm ? "− Cancel" : "+ Create New Promotion"}
               </button>
             </div>
@@ -208,13 +208,13 @@ export default function CompanyDashboard() {
               ) : (
                 <div className="divide-y divide-gray-100 dark:divide-gray-700">
                   {promotions.map((promo) => (
-                    <div key={promo.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                    <div key={promo.id} className="p-4 md:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                        <div className="flex-1 w-full">
                           <h3 className="font-semibold text-xl dark:text-white">{promo.title}</h3>
-                          <p className="text-gray-600 dark:text-gray-300 text-base mt-1">{promo.description}</p>
-                          {promo.link && <a href={promo.link} target="_blank" className="text-orange-600 dark:text-orange-400 text-base block mt-1">🔗 {promo.link}</a>}
-                          <div className="flex items-center gap-3 mt-2">
+                          <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base mt-1">{promo.description}</p>
+                          {promo.link && <a href={promo.link} target="_blank" className="text-orange-600 dark:text-orange-400 text-sm md:text-base block mt-1 break-all">🔗 {promo.link}</a>}
+                          <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-3">
                             {promo.status === "pending" && (
                               <span className="px-2 py-0.5 text-sm rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">⏳ Awaiting Admin Approval</span>
                             )}
@@ -234,17 +234,17 @@ export default function CompanyDashboard() {
                           </div>
                         </div>
                         {promo.status === "approved" && (
-                          <div className="flex flex-col gap-2">
-                            <button onClick={() => handleMakePayment(promo)} className="bg-orange-500 text-white px-4 py-2 rounded-xl text-base font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all">
+                          <div className="flex flex-col gap-2 w-full md:w-auto mt-4 md:mt-0">
+                            <button onClick={() => handleMakePayment(promo)} className="w-full md:w-auto bg-orange-500 text-white px-4 py-2 rounded-xl text-sm md:text-base font-bold shadow-sm hover:shadow-md hover:scale-105 transition-all">
                               🚀 Boost to Top
                             </button>
-                            <button onClick={() => handleMakePayment(promo)} className="bg-white dark:bg-gray-800 border-2 border-orange-500 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-xl text-base font-bold shadow-sm hover:bg-orange-50 dark:hover:bg-gray-700 hover:scale-105 transition-all">
+                            <button onClick={() => handleMakePayment(promo)} className="w-full md:w-auto bg-white dark:bg-gray-800 border-2 border-orange-500 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-xl text-sm md:text-base font-bold shadow-sm hover:bg-orange-50 dark:hover:bg-gray-700 hover:scale-105 transition-all">
                               💖 Donate & Get Badge
                             </button>
                           </div>
                         )}
                         {promo.status === "live" && (
-                          <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 px-4 py-2 rounded-xl text-base font-bold">🚀 Boosted Active</span>
+                          <span className="w-full md:w-auto text-center bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 px-4 py-2 rounded-xl text-sm md:text-base font-bold mt-4 md:mt-0">🚀 Boosted Active</span>
                         )}
                       </div>
                     </div>

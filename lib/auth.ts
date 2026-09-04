@@ -11,7 +11,8 @@ export const authOptions: NextAuthOptions = {
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        loginType: { label: "Login Type", type: "text" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -24,6 +25,10 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) {
           return null;
+        }
+
+        if (credentials.loginType === "company" && user.role !== "company") {
+          throw new Error("NOT_A_COMPANY");
         }
 
         const isValid = await compare(credentials.password, user.passwordHash);
