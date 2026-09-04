@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       return_url: `${baseUrl}/api/payments/verify?tx_ref=${tx_ref}`,
       customization: {
         title: "Ad2Care Promo", // max 16 chars
-        description: `Boost: ${promotionId.substring(0, 8)}` // max 50 chars
+        description: `Boost ${promotionId.substring(0, 8)}` // max 50 chars, NO colons allowed
       }
     };
 
