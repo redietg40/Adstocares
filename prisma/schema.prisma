@@ -27,6 +27,7 @@ model User {
   promotions    Promotion[]
   upvotes       Upvote[]
   comments      Comment[]
+  promotionViews PromotionView[]
 
   @@map("users")
 }
@@ -81,6 +82,7 @@ model Promotion {
   company  User      @relation(fields: [companyId], references: [id])
   upvotes  Upvote[]
   comments Comment[]
+  viewers  PromotionView[]
 
   @@map("promotions")
 }
@@ -131,4 +133,17 @@ model Donation {
   updatedAt       DateTime @updatedAt
 
   @@map("donations")
+}
+
+model PromotionView {
+  id          String   @id @default(uuid())
+  userId      String
+  promotionId String
+  viewedAt    DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+
+  @@unique([userId, promotionId])
+  @@map("promotion_views")
 }
