@@ -192,11 +192,21 @@ export default function PromotionsPage() {
 
           setLocalUpvotes(upvotesMap);
           setUserUpvotedProducts(userVotedMap);
+          
+          // Track views for the loaded promotions
+          if (data.length > 0) {
+            const promoIds = data.map(p => p.id);
+            fetch("/api/promotions/views", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: promoIds })
+            }).catch(console.error);
+          }
         }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Failed to fetch promotions:", err);
         setPromotions([]);
         setLoading(false);
       });
@@ -213,8 +223,8 @@ export default function PromotionsPage() {
     setSelectedPromo(promo);
     setShowModal(true);
     fetchCommentsForPromo(promo.id);
-    // Track view
-    fetch(`/api/promotions/${promo.id}/view`, { method: "POST" }).catch(console.error);
+    // Track click when they open details
+    fetch(`/api/promotions/${promo.id}/click`, { method: "POST" }).catch(console.error);
   };
 
   if (loading) {
