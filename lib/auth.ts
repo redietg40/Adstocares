@@ -55,12 +55,24 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }: any) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.role = token.role;
-        session.user.isVerified = token.isVerified;
-        session.user.companyName = token.companyName;
+      if (token?.id) {
+        // Double-check the database to ensure this user still exists!
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id }
+        });
+
+        // If user was deleted from Prisma Studio, invalidate the session cookie
+        if (!dbUser) {
+          return { ...session, user: null };
+        }
+
+        if (session.user) {
+          session.user.id = dbUser.id;
+          session.user.name = dbUser.companyName || dbUser.email?.split('@')[0];
+          session.user.role = dbUser.role;
+          session.user.isVerified = dbUser.isVerified;
+          session.user.companyName = dbUser.companyName;
+        }
       }
       return session;
     }

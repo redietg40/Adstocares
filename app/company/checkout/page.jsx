@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import Image from "next/image";
 
 function CheckoutContent() {
   const { data: session, status } = useSession();
@@ -13,11 +14,6 @@ function CheckoutContent() {
 
   const [loading, setLoading] = useState(true);
   const [promoTitle, setPromoTitle] = useState("Custom Donation");
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvc, setCvc] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -49,25 +45,15 @@ function CheckoutContent() {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (paymentMethod === "card" && (!cardNumber || !expiry || !cvc)) {
-      alert("Please fill in all card details.");
-      return;
-    }
-    if (paymentMethod !== "card" && !phoneNumber) {
-      alert("Please enter your account or phone number.");
-      return;
-    }
     setIsProcessing(true);
 
     try {
-      const res = await fetch(`/api/pay`, {
+      const res = await fetch(`/api/payments/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           promotionId: promoId,
           amount: amount,
-          paymentMethod: paymentMethod,
-          paymentAccount: paymentMethod === "card" ? cardNumber : phoneNumber,
         }),
       });
 
@@ -105,102 +91,23 @@ function CheckoutContent() {
             <span className="text-xl">‹</span> Back to Dashboard
           </button>
           
-          <h1 className="text-3xl font-bold mb-8 tracking-tight">Configure your plan</h1>
+          <h1 className="text-3xl font-bold mb-8 tracking-tight">Checkout securely</h1>
           
-          <div className="mb-6">
-            <h2 className="text-lg font-medium mb-4">Payment method</h2>
-            
-            <div className="flex gap-3 mb-6">
-              <button 
-                onClick={() => setPaymentMethod("card")} 
-                className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${paymentMethod === 'card' ? 'bg-[#2a2a2a] border-white text-white' : 'border-gray-800 text-gray-400 hover:border-gray-600'}`}
-              >
-                💳 Card
-              </button>
-              <button 
-                onClick={() => setPaymentMethod("telebirr")} 
-                className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${paymentMethod === 'telebirr' ? 'bg-[#2a2a2a] border-green-500 text-white' : 'border-gray-800 text-gray-400 hover:border-gray-600'}`}
-              >
-                📱 TeleBirr
-              </button>
-              <button 
-                onClick={() => setPaymentMethod("cbe")} 
-                className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${paymentMethod === 'cbe' ? 'bg-[#2a2a2a] border-blue-500 text-white' : 'border-gray-800 text-gray-400 hover:border-gray-600'}`}
-              >
-                🏦 CBE Birr
-              </button>
+          <div className="bg-[#1a1a1a] rounded-2xl p-8 border border-gray-800">
+            <h2 className="text-xl font-medium mb-4">Pay with Chapa</h2>
+            <p className="text-gray-400 mb-8 leading-relaxed">
+              You will be redirected to Chapa's secure checkout page to complete your payment using Telebirr, CBE Birr, M-PESA, or your bank card.
+            </p>
+
+            <div className="flex gap-4 mb-8 flex-wrap">
+               <div className="px-4 py-2 bg-[#2a2a2a] rounded-lg text-sm text-gray-300 font-medium">💳 Cards</div>
+               <div className="px-4 py-2 bg-[#2a2a2a] rounded-lg text-sm text-green-400 font-medium">📱 TeleBirr</div>
+               <div className="px-4 py-2 bg-[#2a2a2a] rounded-lg text-sm text-blue-400 font-medium">🏦 CBE Birr</div>
             </div>
 
-            <form onSubmit={handleSubscribe} className="space-y-4">
-              {paymentMethod === "card" ? (
-                <>
-                  <div className="bg-[#1a1a1a] p-4 rounded-xl border border-gray-800 focus-within:border-gray-500 transition-colors flex items-center">
-                    <input 
-                      type="text" 
-                      placeholder="Card number" 
-                      className="bg-transparent w-full outline-none text-gray-200 placeholder-gray-500 text-lg"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      maxLength={19}
-                    />
-                    <div className="flex gap-2">
-                      <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center text-[10px] font-bold">VISA</div>
-                      <div className="w-8 h-5 bg-red-500 rounded flex items-center justify-center text-[10px] font-bold relative overflow-hidden">
-                        <div className="w-4 h-4 rounded-full bg-yellow-400 absolute left-1"></div>
-                        <div className="w-4 h-4 rounded-full bg-orange-500 absolute right-1 mix-blend-multiply"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="bg-[#1a1a1a] p-4 rounded-xl border border-gray-800 focus-within:border-gray-500 transition-colors flex-1">
-                      <input 
-                        type="text" 
-                        placeholder="Expiration date" 
-                        className="bg-transparent w-full outline-none text-gray-200 placeholder-gray-500 text-lg"
-                        value={expiry}
-                        onChange={(e) => setExpiry(e.target.value)}
-                        maxLength={5}
-                      />
-                    </div>
-                    <div className="bg-[#1a1a1a] p-4 rounded-xl border border-gray-800 focus-within:border-gray-500 transition-colors flex-1 relative group">
-                      <input 
-                        type="text" 
-                        placeholder="Security code" 
-                        className="bg-transparent w-full outline-none text-gray-200 placeholder-gray-500 text-lg"
-                        value={cvc}
-                        onChange={(e) => setCvc(e.target.value)}
-                        maxLength={4}
-                      />
-                      <span className="text-xs text-gray-500 absolute bottom-1 left-4">CVC</span>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50">
-                        💳
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="bg-[#1a1a1a] p-4 rounded-xl border border-gray-800 focus-within:border-gray-500 transition-colors flex items-center">
-                  <input 
-                    type="text" 
-                    placeholder={paymentMethod === 'telebirr' ? "+251 9..." : "1000..."}
-                    className="bg-transparent w-full outline-none text-gray-200 placeholder-gray-500 text-lg"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <div className="text-gray-500 text-sm font-medium">
-                    {paymentMethod === 'telebirr' ? "Phone Number" : "Account Number"}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center gap-3 mt-4">
-                <input type="checkbox" id="save-card" className="w-4 h-4 rounded border-gray-700 bg-[#1a1a1a] accent-white" />
-                <label htmlFor="save-card" className="text-sm text-gray-400">Save payment details to Ad2Care for future purchases</label>
-              </div>
-
-              <button type="submit" className="hidden">Submit</button>
-            </form>
+            <div className="flex items-center gap-3 text-sm text-gray-500 bg-[#0a0a0a] p-4 rounded-xl border border-gray-800">
+               <span className="text-xl">🔒</span> Payments are securely processed by Chapa. We do not store your payment information.
+            </div>
           </div>
         </div>
 
@@ -247,9 +154,9 @@ function CheckoutContent() {
             <button 
               onClick={handleSubscribe} 
               disabled={isProcessing}
-              className={`w-full bg-white text-black font-semibold rounded-full py-3 mt-8 hover:bg-gray-200 transition-colors text-lg ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
+              className={`w-full bg-white text-black font-semibold rounded-full py-3 mt-8 hover:bg-gray-200 transition-colors text-lg flex items-center justify-center gap-2 ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {isProcessing ? "Processing..." : "Subscribe"}
+              {isProcessing ? "Connecting to Chapa..." : "Proceed to Payment"}
             </button>
           </div>
         </div>
