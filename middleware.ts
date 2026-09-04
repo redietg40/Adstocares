@@ -10,6 +10,14 @@ export default withAuth(
     ) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
+    // If the user tries to access /company, verify they have the company role
+    if (
+      req.nextUrl.pathname.startsWith("/company") &&
+      req.nextauth.token?.role !== "company"
+    ) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   },
   {
     callbacks: {
