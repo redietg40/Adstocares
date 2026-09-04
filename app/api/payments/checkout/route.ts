@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ checkout_url: data.data.checkout_url });
     } else {
       console.error("Chapa Initialize Error:", data);
-      return NextResponse.json({ error: data.message || "Failed to initialize payment with Chapa" }, { status: 400 });
+      return NextResponse.json({ error: typeof data.message === 'string' ? data.message : JSON.stringify(data) }, { status: 400 });
     }
 
   } catch (error) {
