@@ -89,8 +89,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: typeof data.message === 'string' ? data.message : JSON.stringify(data) }, { status: 400 });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Checkout Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error?.message || "Internal Server Error", stack: error?.stack }, { status: 500 });
   }
 }
