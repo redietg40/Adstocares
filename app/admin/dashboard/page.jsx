@@ -73,6 +73,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         setMessage(`Company ${action === "approve" ? "approved" : "rejected"}!`);
         fetchCompanies();
+        router.refresh();
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
