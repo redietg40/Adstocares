@@ -21,7 +21,7 @@ export default function AdminDashboard() {
 
   const fetchCompanies = async () => {
     try {
-      const res = await fetch("/api/admin/companies");
+      const res = await fetch("/api/admin/companies", { cache: "no-store" });
       const data = await res.json();
       setCompanies(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
 
   const fetchPromotions = async () => {
     try {
-      const res = await fetch("/api/admin/promotions");
+      const res = await fetch("/api/admin/promotions", { cache: "no-store" });
       const data = await res.json();
       console.log("Promotions received:", data);
       setPromotions(Array.isArray(data) ? data : []);
