@@ -80,9 +80,27 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleViewProfile = (company) => {
+  const handleViewProfile = async (company) => {
     setSelectedCompany(company);
     setShowModal(true);
+    
+    // Fetch docs lazily
+    try {
+      const res = await fetch(`/api/admin/companies/docs?companyId=${company.id}`);
+      const data = await res.json();
+      if (data && data.verifications && data.verifications.length > 0) {
+        setSelectedCompany(prev => ({
+          ...prev,
+          verifications: [{
+            ...prev.verifications[0],
+            businessLicenseFileUrl: data.verifications[0]?.businessLicenseFileUrl,
+            taxIdFileUrl: data.verifications[0]?.taxIdFileUrl,
+          }]
+        }));
+      }
+    } catch (e) {
+      console.error("Error fetching docs", e);
+    }
   };
 
   const handleLogout = async () => {

@@ -18,8 +18,6 @@ export async function GET() {
         registrationDate: true,
         verifications: {
           select: {
-            businessLicenseFileUrl: true,
-            taxIdFileUrl: true,
             status: true,
             submittedAt: true,
           }
