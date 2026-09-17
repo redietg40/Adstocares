@@ -25,6 +25,15 @@ export async function POST(req: Request) {
     const shortUserId = session.user.id.substring(0, 8);
     const tx_ref = `tx-${shortUserId}-${Date.now()}`;
 
+    // Determine description and safe ID based on whether it's a promotion or donation
+    let descriptionText = "Ad2Care Donation";
+    let safePromotionId = "DONATION";
+
+    if (promotionId && typeof promotionId === 'string') {
+      descriptionText = `Boost ${promotionId.substring(0, 8)}`;
+      safePromotionId = promotionId;
+    }
+
     // Record the pending payment in the database
     // We store the promotionId temporarily in transactionId to link them together, 
     // or we can pass it via Chapa's customization. We will use tx_ref as the transactionId.
@@ -33,7 +42,7 @@ export async function POST(req: Request) {
         companyId: session.user.id,
         amount: parseInt(amount),
         status: "pending",
-        transactionId: `${tx_ref}:::${promotionId}` // Store tx_ref AND promotionId together safely
+        transactionId: `${tx_ref}:::${safePromotionId}` // Store tx_ref AND promotionId together safely
       }
     });
 
@@ -58,7 +67,7 @@ export async function POST(req: Request) {
       return_url: `${baseUrl}/api/payments/verify?tx_ref=${tx_ref}`,
       customization: {
         title: "Ad2Care Promo", // max 16 chars
-        description: `Boost ${promotionId.substring(0, 8)}` // max 50 chars, NO colons allowed
+        description: descriptionText // max 50 chars, NO colons allowed
       }
     };
 
