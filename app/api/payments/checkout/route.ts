@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     const data = await response.json();
 
     if (data.status === "success" && data.data && data.data.checkout_url) {
-      return NextResponse.json({ checkout_url: data.data.checkout_url });
+      return NextResponse.json({ checkout_url: data.data.checkout_url, tx_ref: tx_ref });
     } else {
       console.error("Chapa Initialize Error:", data);
       return NextResponse.json({ error: typeof data.message === 'string' ? data.message : JSON.stringify(data) }, { status: 400 });

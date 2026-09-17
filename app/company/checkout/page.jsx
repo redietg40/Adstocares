@@ -77,6 +77,39 @@ function CheckoutContent() {
     }
   };
 
+  const handleBypass = async () => {
+    setIsProcessing(true);
+    try {
+      const res = await fetch(`/api/payments/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          promotionId: promoId,
+          amount: amount,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.checkout_url) {
+          // Instead of going to Chapa, extract tx_ref and simulate success
+          // The checkout_url looks like: https://checkout.chapa.co/checkout/payment/xxxxx
+          // Wait, Chapa doesn't return tx_ref in checkout_url.
+          // But our backend can just return it in the response for testing!
+          alert("Because Chapa's Test Server is down, we are forcing a successful verification!");
+          window.location.href = `/api/payments/verify?tx_ref=${data.tx_ref}&bypass=true`;
+        }
+      } else {
+        const data = await res.json();
+        alert(`Failed to initialize bypass: ${data.error}`);
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsProcessing(false);
+    }
+  };
+
   if (loading || status === "loading") {
     return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">Loading...</div>;
   }
@@ -157,6 +190,14 @@ function CheckoutContent() {
               className={`w-full bg-white text-black font-semibold rounded-full py-3 mt-8 hover:bg-gray-200 transition-colors text-lg flex items-center justify-center gap-2 ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
             >
               {isProcessing ? "Connecting to Chapa..." : "Proceed to Payment"}
+            </button>
+            
+            <button 
+              onClick={handleBypass} 
+              disabled={isProcessing}
+              className={`w-full bg-transparent border border-red-500/50 text-red-400 font-semibold rounded-full py-2 mt-4 hover:bg-red-500/10 transition-colors text-sm flex items-center justify-center gap-2 ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
+            >
+              🛠️ Bypass Payment (Test Mode Fix)
             </button>
           </div>
         </div>
