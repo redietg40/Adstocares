@@ -13,6 +13,8 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("promotions");
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [searchPromotions, setSearchPromotions] = useState("");
+  const [searchCompanies, setSearchCompanies] = useState("");
 
   useEffect(() => {
     fetchCompanies();
@@ -120,8 +122,18 @@ export default function AdminDashboard() {
     );
   }
 
-  const pendingPromotions = promotions.filter(p => p.status === "pending");
-  const approvedPromotions = promotions.filter(p => p.status === "approved");
+  const filteredPromotions = promotions.filter(p => 
+    p.title.toLowerCase().includes(searchPromotions.toLowerCase()) || 
+    (p.company?.companyName || "").toLowerCase().includes(searchPromotions.toLowerCase())
+  );
+  
+  const filteredCompanies = companies.filter(c => 
+    (c.companyName || "").toLowerCase().includes(searchCompanies.toLowerCase()) || 
+    c.email.toLowerCase().includes(searchCompanies.toLowerCase())
+  );
+
+  const pendingPromotions = filteredPromotions.filter(p => p.status === "pending");
+  const approvedPromotions = filteredPromotions.filter(p => p.status === "approved");
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -178,6 +190,15 @@ export default function AdminDashboard() {
         {/* Promotions Tab */}
         {activeTab === "promotions" && (
           <div className="space-y-6">
+            <div className="mb-4">
+              <input 
+                type="text" 
+                placeholder="🔍 Search promotions by title or company..." 
+                value={searchPromotions}
+                onChange={(e) => setSearchPromotions(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-600 outline-none"
+              />
+            </div>
             {pendingPromotions.length > 0 && (
               <div className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="px-6 py-4 border-b bg-yellow-50">
@@ -254,14 +275,21 @@ export default function AdminDashboard() {
         {/* Companies Tab with View Profile Button */}
         {activeTab === "companies" && (
           <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-            <div className="px-6 py-4 border-b bg-gray-50">
+            <div className="px-6 py-4 border-b bg-gray-50 flex justify-between items-center gap-4 flex-wrap">
               <h2 className="text-xl font-semibold">Registered Companies</h2>
+              <input 
+                type="text" 
+                placeholder="🔍 Search companies by name or email..." 
+                value={searchCompanies}
+                onChange={(e) => setSearchCompanies(e.target.value)}
+                className="w-full md:w-64 px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-600 outline-none"
+              />
             </div>
-            {companies.length === 0 ? (
+            {filteredCompanies.length === 0 ? (
               <div className="p-12 text-center text-gray-500">No companies found</div>
             ) : (
               <div className="divide-y divide-gray-100">
-                {companies.map((company) => (
+                {filteredCompanies.map((company) => (
                   <div key={company.id} className="p-6 hover:bg-gray-50 transition">
                     <div className="flex justify-between items-center">
                       <div>
@@ -393,10 +421,39 @@ export default function AdminDashboard() {
 
               {/* No Documents Message */}
               {(!selectedCompany.verifications || selectedCompany.verifications.length === 0) && (
-                <div className="bg-yellow-50 rounded-xl p-4 text-center">
+                <div className="bg-yellow-50 rounded-xl p-4 text-center border-b pb-4">
                   <p className="text-sm text-yellow-800">No documents uploaded yet</p>
                 </div>
               )}
+
+              {/* Company Promotions */}
+              <div className="border-b pb-4">
+                <h4 className="text-lg font-semibold text-gray-800 mb-3">Company Promotions</h4>
+                <div className="space-y-3">
+                  {promotions.filter(p => p.companyId === selectedCompany.id).length === 0 ? (
+                    <p className="text-sm text-gray-500 italic">This company hasn't submitted any promotions yet.</p>
+                  ) : (
+                    promotions.filter(p => p.companyId === selectedCompany.id).map(promo => (
+                      <div key={promo.id} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h5 className="font-semibold text-gray-900">{promo.title}</h5>
+                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{promo.description}</p>
+                          </div>
+                          <span className={`px-2 py-1 text-xs rounded-full ${promo.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                            {promo.status}
+                          </span>
+                        </div>
+                        <div className="flex gap-3 mt-3">
+                          <span className="text-xs text-gray-500">👁️ {promo.views || 0} views</span>
+                          <span className="text-xs text-gray-500">🖱️ {promo.clicks || 0} clicks</span>
+                          {promo.isSponsored && <span className="text-xs text-orange-600 font-bold">✨ Sponsored</span>}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-3 pt-4">
