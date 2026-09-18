@@ -187,8 +187,13 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Featured Promotions</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {promotions.map((promo: any) => (
-                <div key={promo.id} className="bg-gray-50 dark:bg-gray-700/60 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-600 hover:shadow-md transition">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{promo.title}</h3>
+                <div key={promo.id} className={`bg-gray-50 dark:bg-gray-700/60 rounded-2xl p-6 shadow-sm border ${promo.isSponsored ? 'border-orange-400 dark:border-orange-500 shadow-orange-100 dark:shadow-orange-900/20' : 'border-gray-100 dark:border-gray-600'} hover:shadow-md transition relative`}>
+                  {promo.isSponsored && (
+                    <div className="absolute -top-3 -right-3 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md uppercase tracking-wide flex items-center gap-1 z-10">
+                      <span>✨</span> Sponsored
+                    </div>
+                  )}
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white pr-6">{promo.title}</h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-2 line-clamp-2">{promo.description}</p>
                   <p className="text-orange-600 dark:text-orange-400 text-xs mt-2 font-medium">🏢 {promo.company?.companyName}</p>
                   <button

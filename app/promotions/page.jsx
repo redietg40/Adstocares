@@ -331,7 +331,7 @@ export default function PromotionsPage() {
                   <div
                     key={promo.id}
                     onClick={() => handleViewDetails(promo)}
-                    className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between group overflow-hidden"
+                    className={`p-4 rounded-lg border ${promo.isSponsored ? 'bg-orange-50/50 dark:bg-orange-900/10 border-orange-300 dark:border-orange-700 hover:border-orange-500 shadow-sm' : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md'} transition cursor-pointer flex items-center justify-between group overflow-hidden relative`}
                   >
                     <div className="flex items-center flex-1 min-w-0 pr-4">
                       {/* Thumbnail */}
@@ -351,8 +351,13 @@ export default function PromotionsPage() {
 
                       {/* Content */}
                       <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-                        <div className="flex items-center text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#FF6154] transition-colors truncate">
-                          <span className="mr-1">{index + 1}.</span> {promo.title}
+                        <div className="flex items-center text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#FF6154] transition-colors truncate gap-2">
+                          <span>{index + 1}. {promo.title}</span>
+                          {promo.isSponsored && (
+                            <span className="bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-400 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold flex-shrink-0 flex items-center gap-1">
+                              ✨ Sponsored
+                            </span>
+                          )}
                         </div>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 truncate">
                           {promo.description || "A new amazing product from " + promo.company?.companyName}
