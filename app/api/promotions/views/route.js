@@ -14,30 +14,45 @@ export async function POST(request) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
 
-    // Increment views for all provided promotion IDs in one query
-    await prisma.promotion.updateMany({
-      where: {
-        id: { in: ids }
-      },
-      data: {
-        views: { increment: 1 }
-      }
-    });
-
-    // If user is logged in, record the view against their profile
+    // Only track views for logged-in users
     if (userId) {
-      const viewData = ids.map(id => ({
-        userId,
-        promotionId: id
-      }));
+      // Find which promotions don't belong to this user
+      const promotions = await prisma.promotion.findMany({
+        where: { id: { in: ids } },
+        select: { id: true, companyId: true }
+      });
       
-      try {
-        await prisma.promotionView.createMany({
-          data: viewData,
-          skipDuplicates: true
-        });
-      } catch (err) {
-        console.error("Failed to record individual views:", err);
+      const validPromotionIds = promotions
+        .filter(p => p.companyId !== userId)
+        .map(p => p.id);
+
+      if (validPromotionIds.length > 0) {
+        const viewData = validPromotionIds.map(id => ({
+          userId,
+          promotionId: id
+        }));
+        
+        try {
+          // Record the unique views
+          await prisma.promotionView.createMany({
+            data: viewData,
+            skipDuplicates: true
+          });
+
+          // Sync the integer view count on the Promotion table
+          // to match the exact number of unique viewers
+          for (const id of validPromotionIds) {
+            const count = await prisma.promotionView.count({
+              where: { promotionId: id }
+            });
+            await prisma.promotion.update({
+              where: { id },
+              data: { views: count }
+            });
+          }
+        } catch (err) {
+          console.error("Failed to record individual views:", err);
+        }
       }
     }
 

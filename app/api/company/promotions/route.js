@@ -20,10 +20,21 @@ export async function GET() {
 
     const promotions = await prisma.promotion.findMany({
       where: { companyId: user.id },
+      include: {
+        _count: {
+          select: { viewers: true }
+        }
+      },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(promotions);
+    // Overwrite the static "views" integer with the actual precise count of unique viewers
+    const formattedPromotions = promotions.map(promo => ({
+      ...promo,
+      views: promo._count.viewers
+    }));
+
+    return NextResponse.json(formattedPromotions);
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json({ error: "Failed to fetch promotions" }, { status: 500 });
