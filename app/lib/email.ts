@@ -126,3 +126,80 @@ export async function sendVerificationEmail({
     return false;
   }
 }
+
+interface SendPasswordResetEmailParams {
+  toEmail: string;
+  resetUrl: string;
+}
+
+export async function sendPasswordResetEmail({
+  toEmail,
+  resetUrl,
+}: SendPasswordResetEmailParams): Promise<boolean> {
+  const fromEmail = process.env.SMTP_FROM || '"Ad2Care Verification" <no-reply@ad2care.com>';
+  const subject = `Reset Your Ad2Care Password`;
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333; }
+          .container { max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+          .header { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 32px 24px; text-align: center; color: #ffffff; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+          .content { padding: 36px 32px; text-align: center; }
+          .btn { display: inline-block; background-color: #ea580c; color: #ffffff !important; font-weight: 700; font-size: 16px; padding: 14px 32px; border-radius: 10px; text-decoration: none; margin-top: 20px; }
+          .footer { background: #f9fafb; padding: 20px; text-align: center; font-size: 13px; color: #9ca3af; border-top: 1px solid #f3f4f6; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Ad2Care</h1>
+          </div>
+          <div class="content">
+            <h2 style="font-size: 22px; color: #111827; margin-top: 0;">Password Reset Request</h2>
+            <p style="font-size: 15px; color: #4b5563; line-height: 1.6;">
+              We received a request to reset your password. Click the button below to choose a new one. This link will expire in 1 hour.
+            </p>
+            <div style="margin-top: 28px; margin-bottom: 28px;">
+              <a href="${resetUrl}" target="_blank" class="btn">Reset Password</a>
+            </div>
+            <p style="font-size: 14px; color: #6b7280;">If you did not make this request, you can safely ignore this email.</p>
+          </div>
+          <div class="footer">
+            &copy; ${new Date().getFullYear()} Ad2Care Platform. All rights reserved.
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  console.log("\n=======================================================");
+  console.log(`[PASSWORD RESET] To: ${toEmail}`);
+  console.log(`[PASSWORD RESET] Direct Link: ${resetUrl}`);
+  console.log("=======================================================\n");
+
+  const transporter = getTransporter();
+
+  if (!transporter) {
+    console.log("[PASSWORD RESET] SMTP variables not fully configured. Email printed to console above.");
+    return true;
+  }
+
+  try {
+    await transporter.sendMail({
+      from: fromEmail,
+      to: toEmail,
+      subject,
+      html: htmlContent,
+    });
+    console.log(`[PASSWORD RESET] Email successfully sent to ${toEmail}`);
+    return true;
+  } catch (error) {
+    console.error("[PASSWORD RESET] Failed to send email via SMTP:", error);
+    return false;
+  }
+}

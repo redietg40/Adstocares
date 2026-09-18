@@ -70,6 +70,14 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
             />
+            <div className="flex justify-end mt-2">
+              <a
+                href="/forgot-password"
+                className="text-xs font-medium text-purple-600 hover:underline"
+              >
+                Forgot Password?
+              </a>
+            </div>
           </div>
 
           <button

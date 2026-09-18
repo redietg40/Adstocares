@@ -123,6 +123,14 @@ function UserLoginForm() {
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
+            <div className="flex justify-end mt-2">
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-orange-600 dark:text-orange-400 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button

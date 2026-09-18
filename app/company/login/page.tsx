@@ -118,6 +118,14 @@ function LoginContent() {
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
+            <div className="flex justify-end mt-2">
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-orange-600 dark:text-orange-400 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button

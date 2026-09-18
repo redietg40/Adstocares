@@ -167,6 +167,10 @@ export default function UserRegisterPage() {
             <Link href="/login" className="text-orange-600 dark:text-orange-400 font-semibold hover:underline">
               Sign In
             </Link>
+            {" "}•{" "}
+            <Link href="/forgot-password" className="text-orange-600 dark:text-orange-400 hover:underline">
+              Forgot Password?
+            </Link>
           </p>
 
           <p className="text-xs text-gray-500 dark:text-gray-400">

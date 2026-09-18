@@ -16,9 +16,11 @@ model User {
   isEmailVerified          Boolean   @default(false)
   emailVerificationToken   String?
   emailVerificationExpires DateTime?
+  passwordResetToken       String?
+  passwordResetExpires     DateTime?
   companyName              String?
-  companyLicenseNumber String?
-  registrationDate     DateTime @default(now())
+  companyLicenseNumber     String?
+  registrationDate         DateTime @default(now())
   trustScore           Int      @default(0) // Trusted Company logic
 
   verifications CompanyVerification[]

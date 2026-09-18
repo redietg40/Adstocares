@@ -191,6 +191,10 @@ export default function CompanyRegisterPage() {
                     <Link href="/company/login" className="text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300">
                         Already have an account? Sign in
                     </Link>
+                    {" "}•{" "}
+                    <Link href="/forgot-password" className="text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300">
+                        Forgot Password?
+                    </Link>
                 </div>
             </div>
         </div>
