@@ -247,23 +247,42 @@ export default function PromotionsPage() {
       )}
       {/* Navbar (Simplified) */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 transition-colors">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#FF6154] text-white rounded-full flex items-center justify-center font-bold text-xl">
-              P
+        <div className="max-w-5xl mx-auto px-4 py-4 flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-[#FF6154] text-white rounded-full flex items-center justify-center font-bold text-xl">
+                P
+              </div>
+              <h1 className="text-xl font-bold text-gray-800 dark:text-white">Ad2Care</h1>
             </div>
-            <h1 className="text-xl font-bold text-gray-800 dark:text-white">Ad2Care</h1>
+            {/* Show user/auth buttons on right side of mobile header top-row */}
+            <div className="md:hidden flex items-center gap-3">
+              {session ? (
+                <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">
+                  {session.user?.companyName || session.user?.name || session.user?.email?.split('@')[0]}
+                </span>
+              ) : (
+                <>
+                  <Link href="/login" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium">Sign in</Link>
+                  <Link href="/register" className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition">Register</Link>
+                </>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
+          
+          <div className="flex items-center gap-4 w-full md:w-auto order-3 md:order-2">
+            <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-64 px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-white border-none rounded-full text-sm focus:ring-2 focus:ring-[#FF6154] outline-none transition-colors"
+                className="w-full md:w-64 px-4 py-2 bg-gray-100 dark:bg-gray-700 dark:text-white border-none rounded-full text-sm focus:ring-2 focus:ring-[#FF6154] outline-none transition-colors"
               />
             </div>
+          </div>
+
+          <div className="hidden md:flex items-center gap-4 order-2 md:order-3">
             {session ? (
               <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">
                 {session.user?.companyName || session.user?.name || session.user?.email}
