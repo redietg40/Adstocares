@@ -21,6 +21,10 @@ export default function AdminDashboard() {
   const [viewersList, setViewersList] = useState([]);
   const [loadingViewers, setLoadingViewers] = useState(false);
 
+  // Promo Details Modal State
+  const [showPromoDetailsModal, setShowPromoDetailsModal] = useState(false);
+  const [selectedPromoDetails, setSelectedPromoDetails] = useState(null);
+
   useEffect(() => {
     fetchCompanies();
     fetchPromotions();
@@ -131,6 +135,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleViewPromoDetails = (promo) => {
+    setSelectedPromoDetails(promo);
+    setShowPromoDetailsModal(true);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50">
@@ -226,7 +235,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="divide-y divide-gray-100">
                   {pendingPromotions.map((promo) => (
-                    <div key={promo.id} className="p-6 hover:bg-gray-50 transition">
+                    <div key={promo.id} className="p-6 hover:bg-gray-50 transition cursor-pointer" onClick={() => handleViewPromoDetails(promo)}>
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <h3 className="font-bold text-lg text-gray-800">{promo.title}</h3>
@@ -244,10 +253,10 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="flex gap-2 ml-4">
-                          <button onClick={() => handlePromotionAction(promo.id, "approve")} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                          <button onClick={(e) => { e.stopPropagation(); handlePromotionAction(promo.id, "approve"); }} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
                             ✅ Approve
                           </button>
-                          <button onClick={() => handlePromotionAction(promo.id, "reject")} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                          <button onClick={(e) => { e.stopPropagation(); handlePromotionAction(promo.id, "reject"); }} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
                             ❌ Reject
                           </button>
                         </div>
@@ -265,7 +274,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="divide-y divide-gray-100">
                   {approvedPromotions.map((promo) => (
-                    <div key={promo.id} className="p-6 hover:bg-gray-50 transition">
+                    <div key={promo.id} className="p-6 hover:bg-gray-50 transition cursor-pointer" onClick={() => handleViewPromoDetails(promo)}>
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-semibold text-lg text-gray-800">{promo.title}</h3>
@@ -458,7 +467,7 @@ export default function AdminDashboard() {
                     <p className="text-sm text-gray-500 italic">This company hasn't submitted any promotions yet.</p>
                   ) : (
                     promotions.filter(p => p.companyId === selectedCompany.id).map(promo => (
-                      <div key={promo.id} className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                      <div key={promo.id} className="bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer hover:border-purple-300 transition" onClick={() => handleViewPromoDetails(promo)}>
                         <div className="flex justify-between items-start">
                           <div>
                             <h5 className="font-semibold text-gray-900">{promo.title}</h5>
@@ -541,6 +550,78 @@ export default function AdminDashboard() {
             </div>
             <div className="p-4 border-t bg-gray-50 text-right">
               <button onClick={() => setShowViewersModal(false)} className="px-5 py-2 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 font-medium transition-colors">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Promotion Details Modal */}
+      {showPromoDetailsModal && selectedPromoDetails && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-start bg-gray-50 rounded-t-2xl">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                    {selectedPromoDetails.imageUrl ? (
+                      <img src={selectedPromoDetails.imageUrl} alt={selectedPromoDetails.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-2xl bg-purple-100 text-purple-600 font-bold">
+                        {selectedPromoDetails.title ? selectedPromoDetails.title.charAt(0) : "P"}
+                      </div>
+                    )}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-2xl font-bold text-gray-900 truncate">{selectedPromoDetails.title}</h3>
+                  <p className="text-gray-500 mt-1 truncate">{selectedPromoDetails.company?.companyName || "Unknown Company"}</p>
+                </div>
+              </div>
+              <button onClick={() => setShowPromoDetailsModal(false)} className="text-gray-400 hover:text-gray-700 text-3xl font-light ml-4">&times;</button>
+            </div>
+            
+            <div className="p-6 flex-1">
+              {selectedPromoDetails.imageUrl && (
+                <img src={selectedPromoDetails.imageUrl} alt={selectedPromoDetails.title} className="w-full h-64 object-cover rounded-lg mb-6 border border-gray-200" />
+              )}
+              
+              <div className="flex justify-between items-center mb-6">
+                 <div>
+                    <span className={`px-3 py-1 text-xs rounded-full font-bold ${selectedPromoDetails.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {selectedPromoDetails.status.toUpperCase()}
+                    </span>
+                    {selectedPromoDetails.isSponsored && (
+                      <span className="ml-2 px-3 py-1 text-xs rounded-full bg-orange-100 text-orange-700 font-bold">
+                        ✨ SPONSORED
+                      </span>
+                    )}
+                 </div>
+                 <div className="flex gap-4">
+                    <span className="text-gray-600 font-semibold flex items-center gap-1">👁️ {selectedPromoDetails.views || 0}</span>
+                    <span className="text-gray-600 font-semibold flex items-center gap-1">🖱️ {selectedPromoDetails.clicks || 0}</span>
+                 </div>
+              </div>
+
+              <h4 className="font-semibold text-gray-900 mt-4 mb-2">Description</h4>
+              <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap break-words">
+                {selectedPromoDetails.description || "No description provided."}
+              </p>
+
+              {selectedPromoDetails.link && (
+                <div className="pt-6 border-t border-gray-100 mb-6">
+                  <a 
+                    href={selectedPromoDetails.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center justify-center gap-2 w-full bg-purple-50 text-purple-700 font-semibold text-center py-4 rounded-lg hover:bg-purple-100 transition-colors"
+                  >
+                    Visit Website URL 🔗
+                  </a>
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t bg-gray-50 text-right rounded-b-2xl">
+              <button onClick={() => setShowPromoDetailsModal(false)} className="px-5 py-2 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 font-medium transition-colors">
                 Close
               </button>
             </div>

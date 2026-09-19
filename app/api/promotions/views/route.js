@@ -13,9 +13,10 @@ export async function POST(request) {
 
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
+    const userRole = session?.user?.role;
 
-    // Only track views for logged-in users
-    if (userId) {
+    // Only track views for logged-in users and NOT admins
+    if (userId && userRole !== "admin") {
       // Find which promotions don't belong to this user
       const promotions = await prisma.promotion.findMany({
         where: { id: { in: ids } },
