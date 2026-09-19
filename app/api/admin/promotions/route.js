@@ -29,11 +29,19 @@ export async function GET() {
             email: true,
           },
         },
+        _count: {
+          select: { viewers: true }
+        }
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(promotions);
+    const formattedPromotions = promotions.map(promo => ({
+      ...promo,
+      views: promo._count.viewers
+    }));
+
+    return NextResponse.json(formattedPromotions);
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json([], { status: 200 });

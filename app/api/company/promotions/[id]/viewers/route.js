@@ -8,17 +8,17 @@ export async function GET(request, { params }) {
     const { id } = params;
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email || session.user.role !== "company") {
+    if (!session?.user?.email || !["company", "admin"].includes(session.user.role)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Verify the promotion belongs to this company
+    // Verify the promotion belongs to this company OR the user is an admin
     const promotion = await prisma.promotion.findUnique({
       where: { id },
       select: { companyId: true }
     });
 
-    if (!promotion || promotion.companyId !== session.user.id) {
+    if (!promotion || (session.user.role !== "admin" && promotion.companyId !== session.user.id)) {
       return NextResponse.json({ error: "Unauthorized or promotion not found" }, { status: 403 });
     }
 

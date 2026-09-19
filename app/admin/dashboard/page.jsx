@@ -16,6 +16,11 @@ export default function AdminDashboard() {
   const [searchPromotions, setSearchPromotions] = useState("");
   const [searchCompanies, setSearchCompanies] = useState("");
 
+  // Viewer Modal State
+  const [showViewersModal, setShowViewersModal] = useState(false);
+  const [viewersList, setViewersList] = useState([]);
+  const [loadingViewers, setLoadingViewers] = useState(false);
+
   useEffect(() => {
     fetchCompanies();
     fetchPromotions();
@@ -109,6 +114,21 @@ export default function AdminDashboard() {
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/admin/login");
+  };
+
+  const handleViewViewers = async (promoId) => {
+    setShowViewersModal(true);
+    setLoadingViewers(true);
+    setViewersList([]);
+    try {
+      const res = await fetch(`/api/company/promotions/${promoId}/viewers`);
+      const data = await res.json();
+      setViewersList(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error fetching viewers:", error);
+    } finally {
+      setLoadingViewers(false);
+    }
   };
 
   if (loading) {
@@ -215,8 +235,10 @@ export default function AdminDashboard() {
                             <span>🏢 {promo.company?.companyName}</span>
                             {promo.link && <span>🔗 <a href={promo.link} target="_blank" className="text-purple-600 hover:underline">{promo.link}</a></span>}
                           </div>
-                          <div className="flex gap-3 mt-3">
-                            <span className="text-xs text-gray-400">👁️ {promo.views || 0} views</span>
+                          <div className="flex gap-3 mt-3 items-center">
+                            <button onClick={() => handleViewViewers(promo.id)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                              👁️ {promo.views || 0} views
+                            </button>
                             <span className="text-xs text-gray-400">🖱️ {promo.clicks || 0} clicks</span>
                             <span className="text-xs text-gray-400">📅 {new Date(promo.createdAt).toLocaleDateString()}</span>
                           </div>
@@ -249,8 +271,10 @@ export default function AdminDashboard() {
                           <h3 className="font-semibold text-lg text-gray-800">{promo.title}</h3>
                           <p className="text-gray-600 text-sm mt-1">{promo.description}</p>
                           <p className="text-sm text-gray-500 mt-1">🏢 {promo.company?.companyName}</p>
-                          <div className="flex gap-3 mt-2">
-                            <span className="text-xs text-gray-400">👁️ {promo.views || 0} views</span>
+                          <div className="flex gap-3 mt-2 items-center">
+                            <button onClick={() => handleViewViewers(promo.id)} className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                              👁️ {promo.views || 0} views
+                            </button>
                             <span className="text-xs text-gray-400">🖱️ {promo.clicks || 0} clicks</span>
                           </div>
                         </div>
@@ -475,6 +499,50 @@ export default function AdminDashboard() {
                   </button>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Viewers Modal */}
+      {showViewersModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4 flex justify-between items-center">
+              <h3 className="text-xl font-bold text-white">Users Who Viewed</h3>
+              <button onClick={() => setShowViewersModal(false)} className="text-white text-2xl hover:text-gray-200">&times;</button>
+            </div>
+            <div className="p-6 max-h-[60vh] overflow-y-auto">
+              {loadingViewers ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : viewersList.length === 0 ? (
+                <p className="text-center text-gray-500 py-8">No registered users have viewed this yet, or views were anonymous.</p>
+              ) : (
+                <div className="space-y-4">
+                  {viewersList.map((viewer) => (
+                    <div key={viewer.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                      <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
+                        {viewer.user?.companyName?.[0]?.toUpperCase() || viewer.user?.email?.[0]?.toUpperCase() || "U"}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {viewer.user?.companyName || viewer.user?.email?.split('@')[0]}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(viewer.viewedAt).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t bg-gray-50 text-right">
+              <button onClick={() => setShowViewersModal(false)} className="px-5 py-2 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 font-medium transition-colors">
+                Close
+              </button>
             </div>
           </div>
         </div>
