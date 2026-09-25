@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ad2care:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # - DATABASE_URL=postgres://neondb_owner:npg_8vBXLifmd3cC@ep-sweet-mouse-awpzhxfs-pooler.c-12.us-east-1.aws.neon.tech/neondb?sslmode=require
+      # - NEXTAUTH_SECRET=your_secret_here
+      # - NEXTAUTH_URL=http://localhost:3000
+    env_file:
+      - .env.local
+    restart: always
