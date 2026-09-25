@@ -6,7 +6,12 @@ export async function middleware(req) {
 
   if (!token) {
     if (req.nextUrl.pathname.startsWith("/company")) {
-      return NextResponse.redirect(new URL("/company/login", req.url));
+      return NextResponse.json({
+        error: "DEBUG: Token is null in middleware",
+        secretLength: process.env.NEXTAUTH_SECRET ? process.env.NEXTAUTH_SECRET.length : 0,
+        cookies: req.cookies.getAll().map(c => c.name),
+        url: req.url,
+      });
     }
     if (req.nextUrl.pathname.startsWith("/admin")) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
@@ -27,7 +32,11 @@ export async function middleware(req) {
     req.nextUrl.pathname.startsWith("/company") &&
     token.role !== "company"
   ) {
-    return NextResponse.redirect(new URL("/company/login", req.url));
+    return NextResponse.json({
+      error: "DEBUG: Token role is not company",
+      tokenRole: token.role,
+      tokenId: token.id
+    });
   }
 
   return NextResponse.next();
