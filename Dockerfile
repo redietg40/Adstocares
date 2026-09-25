@@ -36,9 +36,9 @@ RUN npx prisma generate
 
 RUN \
   if [ -f yarn.lock ]; then yarn build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm run build; \
-  else npm run build; \
+  elif [ -f package-lock.json ]; then npx next build; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && npx next build; \
+  else npx next build; \
   fi
 
 # Production image, copy all the files and run next
