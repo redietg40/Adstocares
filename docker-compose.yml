@@ -13,5 +13,5 @@ services:
       # - NEXTAUTH_SECRET=your_secret_here
       # - NEXTAUTH_URL=http://localhost:3000
     env_file:
-      - .env.local
+      - .env
     restart: always
