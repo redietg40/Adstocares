@@ -16,7 +16,7 @@ export default withAuth(
       req.nextUrl.pathname.startsWith("/company") &&
       req.nextauth.token?.role !== "company"
     ) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/company/login", req.url));
     }
   },
   {

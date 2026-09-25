@@ -37,6 +37,7 @@ function LoginContent() {
           setError("Invalid email or password");
         }
       } else {
+        router.refresh();
         router.push("/company/dashboard");
       }
     } catch (err) {
