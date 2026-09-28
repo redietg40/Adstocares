@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { Chapa } from "chapa-nodejs";
-import { authOptions } from "../../lib/auth";
+import { authOptions } from "@/lib/auth";
 
 import prisma from "@/lib/prisma";
 const chapa = new Chapa({
